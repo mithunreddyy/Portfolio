@@ -30,13 +30,13 @@ export function Footer() {
   ];
 
   return (
-    <footer id="contact" className="section-container pt-6 sm:pt-10 pb-32 sm:pb-24 bg-bg text-muted">
-      <h2 className="text-[15px] sm:text-[17px] font-semibold text-ink mb-2 sm:mb-3">Contact</h2>
-      <p className="text-[14px] sm:text-[15px] leading-[1.75] text-muted/70 font-medium mb-6 sm:mb-8 max-w-xl">
+    <footer id="contact" className="section-container pt-6 sm:pt-8 pb-24 sm:pb-20 bg-bg text-muted">
+      <h2 className="text-[15px] sm:text-[17px] font-semibold text-ink mb-2">Contact</h2>
+      <p className="text-[14px] sm:text-[15px] leading-[1.75] text-muted/70 font-medium mb-5 sm:mb-6 max-w-xl">
         You can contact me using the form or via the links below.
       </p>
 
-      <form className="space-y-3 mb-10 sm:mb-12" onSubmit={handleSubmit}>
+      <form className="space-y-3 mb-8 sm:mb-10" onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <input
             type="text" placeholder="Name" value={formState.name}
@@ -80,7 +80,7 @@ export function Footer() {
       </form>
 
       {/* Social Links */}
-      <div className="mb-10 sm:mb-12">
+      <div className="mb-8 sm:mb-10">
         {socials.map((social) => (
           <a key={social.label} href={social.href}
             className="flex items-center justify-between py-3.5 sm:py-4 group transition-all active:bg-ink/[0.02] -mx-2 px-2 rounded-lg">

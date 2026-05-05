@@ -62,7 +62,7 @@ export function BlogPostView() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen bg-bg text-ink py-12 px-5 sm:py-16 sm:px-6 md:py-24"
+      className="min-h-screen bg-bg text-ink py-8 px-5 sm:py-12 sm:px-6 md:py-16"
     >
       <SEO
         title={post.title}
@@ -79,12 +79,12 @@ export function BlogPostView() {
         }}
       />
       <div className="max-w-[680px] mx-auto">
-        <Link to="/" className="inline-flex items-center gap-2 text-[12px] font-medium text-muted/40 mb-10 sm:mb-12 hover:text-ink active:text-ink transition-colors py-1.5">
+        <Link to="/" className="inline-flex items-center gap-2 text-[12px] font-medium text-muted/40 mb-6 sm:mb-8 hover:text-ink active:text-ink transition-colors py-1.5">
           <ArrowLeft size={14} className="shrink-0" /> Back
         </Link>
 
-        <header className="mb-10 sm:mb-12">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-[11px] sm:text-[12px] font-medium text-muted/40 mb-6 sm:mb-7 gap-2">
+        <header className="mb-8 sm:mb-10">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-[11px] sm:text-[12px] font-medium text-muted/40 mb-4 sm:mb-5 gap-2">
             <span>{post.date}</span>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1.5">
@@ -97,12 +97,12 @@ export function BlogPostView() {
               </div>
             </div>
           </div>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight leading-[1.15] text-ink mb-4">{post.title}</h1>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight leading-[1.15] text-ink mb-3">{post.title}</h1>
           <p className="text-[14px] sm:text-[15px] text-muted/50 leading-[1.75] font-normal">{post.excerpt}</p>
         </header>
 
         <article>
-          <div className="space-y-5 text-muted/70 text-[14px] sm:text-[15px] md:text-base leading-[1.85] font-normal">
+          <div className="space-y-4 text-muted/70 text-[14px] sm:text-[15px] md:text-base leading-[1.85] font-normal">
             {post.content ? (
               post.content.split('\n\n').map((para, i) => {
                 if (para.trim().startsWith('•') || para.trim().startsWith('-')) {
@@ -145,7 +145,7 @@ export function BlogPostView() {
           </div>
         </article>
 
-        <footer className="mt-14 pt-8">
+        <footer className="mt-10 pt-6">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-ink/[0.04] shrink-0" />
             <div>

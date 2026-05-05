@@ -22,8 +22,8 @@ export function Blog() {
   }, []);
 
   return (
-    <section id="blog" className="section-container pt-6 sm:pt-10 pb-8 sm:pb-12">
-      <div className="mb-4 sm:mb-5">
+    <section id="blog" className="section-container pt-6 sm:pt-8 pb-6 sm:pb-8">
+      <div className="mb-3 sm:mb-4">
         <h2 className="text-[15px] sm:text-[17px] font-semibold text-ink">Writing</h2>
       </div>
 
@@ -58,7 +58,7 @@ export function Blog() {
         ))}
       </div>
 
-      <div className="mt-8 flex justify-start">
+      <div className="mt-6 flex justify-start">
         <Link to="/cms" className="text-[11px] font-medium text-muted/15 hover:text-muted/50 active:text-ink transition-colors py-1.5">
           Manage posts →
         </Link>

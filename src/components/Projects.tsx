@@ -31,15 +31,15 @@ export function Projects() {
   }, [handleKeyDown]);
 
   const cardStyles = [
-    { rotate: -4, x: -15, mdX: -180, y: 0 },
-    { rotate: 3, x: 15, mdX: 180, y: -10 },
-    { rotate: -2, x: 0, mdX: 0, y: 40 },
+    { rotate: -4, x: -15, mdX: -180, y: 0, zIndex: 10 },
+    { rotate: 3, x: 15, mdX: 180, y: -10, zIndex: 12 },
+    { rotate: -2, x: 0, mdX: 0, y: 40, zIndex: 11 },
   ];
 
   return (
-    <section id="projects" className="section-container pt-4 sm:pt-6 pb-8 sm:pb-12 relative overflow-visible">
+    <section id="projects" className="section-container pt-4 sm:pt-6 pb-6 sm:pb-10 relative overflow-visible">
       <div className="relative z-10">
-        <div className="mb-4 sm:mb-5">
+        <div className="mb-3 sm:mb-4">
           <h2 className="text-[15px] sm:text-[17px] font-semibold text-ink mb-2 sm:mb-3">Work</h2>
           <p className="text-[14px] sm:text-[15px] leading-[1.75] text-muted/70 font-medium max-w-xl">
             Below are some select projects, ranging from AI infrastructure to developer tooling.
@@ -86,17 +86,21 @@ export function Projects() {
             ))}
           </div>
         ) : (
-          <div className="relative h-[380px] lg:h-[400px] flex items-center justify-center overflow-visible">
+          <div className="relative h-[380px] lg:h-[400px] flex items-center justify-center overflow-visible mt-8 sm:mt-12">
             <div className="relative w-full h-full flex items-center justify-center">
               {PROJECTS.map((project, index) => {
                 const style = cardStyles[index % cardStyles.length];
+                // Responsive offset calculation
+                const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
+                const currentOffset = isTablet ? style.mdX * 0.8 : style.mdX; // Tighter spread on tablet
+                
                 return (
                   <motion.div
                     key={project.id}
                     initial={{ opacity: 0, y: 30, rotate: style.rotate }}
                     whileInView={{
                       opacity: 1, y: style.y,
-                      x: style.mdX,
+                      x: currentOffset,
                       rotate: style.rotate
                     }}
                     whileHover={{
@@ -107,16 +111,16 @@ export function Projects() {
                     viewport={{ once: true }}
                     onClick={() => setSelectedProject(project)}
                     className="absolute cursor-pointer group"
-                    style={{ zIndex: index + 10 }}
+                    style={{ zIndex: style.zIndex }}
                   >
-                    <div className="bg-bg rounded-2xl shadow-xl overflow-hidden w-[300px] lg:w-[320px] aspect-[4/3] flex flex-col transition-all duration-500">
-                      <div className="h-8 bg-ink/[0.03] flex items-center px-3.5 gap-1">
+                    <div className="bg-bg rounded-2xl shadow-2xl overflow-hidden w-[280px] md:w-[300px] lg:w-[320px] aspect-[4/3] flex flex-col transition-all duration-500 border border-ink/[0.04]">
+                      <div className="h-8 bg-ink/[0.03] flex items-center px-3.5 gap-1 border-b border-ink/[0.02]">
                         <div className="w-1.5 h-1.5 rounded-full bg-ink/10" />
                         <div className="w-1.5 h-1.5 rounded-full bg-ink/10" />
                         <div className="w-1.5 h-1.5 rounded-full bg-ink/10" />
                         <div className="ml-2 flex-1 h-3 bg-ink/5 rounded-full" />
                       </div>
-                      <div className="flex-1 p-5 md:p-6 flex flex-col justify-between">
+                      <div className="flex-1 p-5 md:p-6 flex flex-col justify-between relative bg-gradient-to-b from-transparent to-ink/[0.01]">
                         <div className="space-y-2">
                           <h3 className="text-[14px] md:text-[15px] font-bold text-ink tracking-tight">{project.title}</h3>
                           <p className="text-[12px] text-muted/50 leading-relaxed line-clamp-3">{project.description[0]}</p>
@@ -160,12 +164,12 @@ export function Projects() {
               <button onClick={() => setSelectedProject(null)} className="absolute top-3 right-3 sm:top-5 sm:right-5 p-2 bg-bg hover:bg-ink hover:text-bg rounded-full transition-all group shadow-lg z-20">
                 <X size={16} className="group-hover:rotate-90 transition-transform duration-300" />
               </button>
-              <div className="flex flex-col gap-7 sm:gap-10 pb-20 sm:pb-4">
+              <div className="flex flex-col gap-5 sm:gap-8 pb-16 sm:pb-4">
                 <div className="pr-8">
                   <span className="text-[10px] font-bold text-accent tracking-[0.3em] mb-1.5 block">Project case</span>
                   <h3 className="text-xl sm:text-2xl md:text-[28px] font-bold text-ink tracking-tight">{selectedProject.title}</h3>
                 </div>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-7 sm:gap-10">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-8">
                   <div className="lg:col-span-2 space-y-6">
                     <p className="text-[15px] sm:text-base text-ink leading-[1.75] font-medium">{selectedProject.description[0]}</p>
                     <div className="space-y-3">

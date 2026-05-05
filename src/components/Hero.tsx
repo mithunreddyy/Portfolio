@@ -25,12 +25,12 @@ export function Hero() {
   }, []);
 
   return (
-    <section id="hero" className="section-container pt-6 sm:pt-10 pb-10 sm:pb-14">
+    <section id="hero" className="section-container pt-6 sm:pt-8 pb-8 sm:pb-10">
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
-        className="space-y-7 sm:space-y-9"
+        className="space-y-5 sm:space-y-6"
       >
         <div className="space-y-3">
           <div className="flex items-center gap-2">

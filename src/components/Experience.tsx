@@ -33,15 +33,15 @@ const allSkills = SKILL_GROUPS.flatMap(g => g.skills);
 
 export function ExperienceSection() {
   return (
-    <section id="experience" className="section-container pt-6 sm:pt-10 pb-8 sm:pb-12">
-      <div className="mb-6 sm:mb-8">
-        <h2 className="text-[15px] sm:text-[17px] font-semibold text-ink mb-3">Experience</h2>
+    <section id="experience" className="section-container pt-6 sm:pt-8 pb-6 sm:pb-8">
+      <div className="mb-4 sm:mb-5">
+        <h2 className="text-[15px] sm:text-[17px] font-semibold text-ink">Experience</h2>
         <p className="text-[14px] sm:text-[15px] leading-[1.75] text-muted/70 font-medium max-w-xl">
           Throughout my career, I've worked on various projects, from building scalable systems to designing user-friendly interfaces.
         </p>
       </div>
 
-      <div className="space-y-8 sm:space-y-10">
+      <div className="space-y-6 sm:space-y-8">
         {EXPERIENCES.map((exp, index) => (
           <motion.div
             key={exp.id}
@@ -79,8 +79,8 @@ export function ExperienceSection() {
 /* ─── Stack — Flat colored icons, as-is ─── */
 export function Skills() {
   return (
-    <section id="skills" className="section-container pt-6 sm:pt-8 pb-8 sm:pb-12">
-      <h2 className="text-[15px] sm:text-[17px] font-semibold text-ink text-left mb-5 sm:mb-6">Stack</h2>
+    <section id="skills" className="section-container pt-6 sm:pt-8 pb-6 sm:pb-8">
+      <h2 className="text-[15px] sm:text-[17px] font-semibold text-ink text-left mb-4 sm:mb-5">Stack</h2>
 
       <div className="flex flex-wrap justify-center gap-4 sm:gap-5">
         {allSkills.map((skill, i) => (

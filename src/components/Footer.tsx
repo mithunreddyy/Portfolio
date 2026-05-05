@@ -32,7 +32,7 @@ export function Footer() {
   return (
     <footer id="contact" className="section-container pt-6 sm:pt-8 pb-24 sm:pb-20 bg-bg text-muted">
       <h2 className="text-[15px] sm:text-[17px] font-semibold text-ink mb-2">Contact</h2>
-      <p className="text-[14px] sm:text-[15px] leading-[1.75] text-muted/70 font-medium mb-5 sm:mb-6 max-w-xl">
+      <p className="text-[16px] sm:text-[18px] leading-[1.75] text-muted/70 font-medium mb-5 sm:mb-6 max-w-xl">
         You can contact me using the form or via the links below.
       </p>
 
@@ -86,7 +86,7 @@ export function Footer() {
             className="flex items-center justify-between py-3.5 sm:py-4 group transition-all active:bg-ink/[0.02] -mx-2 px-2 rounded-lg">
             <div className="flex items-center gap-3">
               <span className="text-muted/25 group-hover:text-ink transition-colors">{social.icon}</span>
-              <span className="text-[14px] sm:text-[15px] font-medium text-muted/50 group-hover:text-ink transition-colors">{social.label}</span>
+              <span className="text-[16px] sm:text-[18px] font-medium text-muted/50 group-hover:text-ink transition-colors">{social.label}</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-[13px] sm:text-[14px] text-muted/35 font-medium group-hover:text-ink transition-colors tracking-tight truncate max-w-[180px] sm:max-w-none">

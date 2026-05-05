@@ -44,7 +44,7 @@ export function Blog() {
                 <span className="text-[11px] sm:text-[12px] font-mono text-muted/50 whitespace-nowrap shrink-0">
                   {post.date}
                 </span>
-                <h3 className="flex-1 text-[14px] sm:text-[15px] font-semibold text-ink group-hover:translate-x-0.5 transition-transform duration-300 line-clamp-2 sm:line-clamp-1">
+                <h3 className="flex-1 text-[16px] sm:text-[18px] font-semibold text-ink group-hover:translate-x-0.5 transition-transform duration-300 line-clamp-2 sm:line-clamp-1">
                   {post.title}
                 </h3>
                 <div className="flex items-center gap-1.5 text-[11px] sm:text-[12px] font-mono text-muted/50 shrink-0">

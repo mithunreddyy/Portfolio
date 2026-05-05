@@ -36,7 +36,7 @@ export function ExperienceSection() {
     <section id="experience" className="section-container pt-6 sm:pt-8 pb-6 sm:pb-8">
       <div className="mb-4 sm:mb-5">
         <h2 className="text-[15px] sm:text-[17px] font-semibold text-ink">Experience</h2>
-        <p className="text-[14px] sm:text-[15px] leading-[1.75] text-muted/70 font-medium max-w-xl">
+        <p className="text-[16px] sm:text-[18px] leading-[1.75] text-muted/70 font-medium max-w-xl">
           Throughout my career, I've worked on various projects, from building scalable systems to designing user-friendly interfaces.
         </p>
       </div>
@@ -52,17 +52,17 @@ export function ExperienceSection() {
             className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-6"
           >
             <div className="md:col-span-3">
-              <span className="text-[11px] sm:text-[12px] text-muted/40 font-bold uppercase tracking-widest font-mono block">{exp.period}</span>
+              <span className="text-[12px] sm:text-[14px] text-muted/40 font-bold uppercase tracking-widest font-mono block mt-1">{exp.period}</span>
             </div>
             <div className="md:col-span-9 space-y-3">
               <div className="flex flex-wrap items-baseline gap-1.5">
-                <h3 className="text-[14px] sm:text-[15px] font-semibold text-ink">{exp.role}</h3>
-                <span className="text-[14px] sm:text-[15px] text-muted/40 font-medium">at</span>
-                <span className="text-[14px] sm:text-[15px] text-ink font-semibold">{exp.company}</span>
+                <h3 className="text-[16px] sm:text-[18px] font-semibold text-ink">{exp.role}</h3>
+                <span className="text-[16px] sm:text-[18px] text-muted/40 font-medium">at</span>
+                <span className="text-[16px] sm:text-[18px] text-ink font-semibold">{exp.company}</span>
               </div>
               <ul className="space-y-2.5 pl-0">
                 {exp.highlights.map((h, i) => (
-                  <li key={i} className="text-[13px] sm:text-[14px] text-muted/60 leading-[1.75] font-medium flex gap-3">
+                  <li key={i} className="text-[16px] sm:text-[18px] text-muted/60 leading-[1.75] font-medium flex gap-3">
                     <span className="text-muted/20 mt-0.5 shrink-0">·</span>
                     <span>{h}</span>
                   </li>

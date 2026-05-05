@@ -98,11 +98,11 @@ export function BlogPostView() {
             </div>
           </div>
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight leading-[1.15] text-ink mb-3">{post.title}</h1>
-          <p className="text-[14px] sm:text-[15px] text-muted/50 leading-[1.75] font-normal">{post.excerpt}</p>
+          <p className="text-[16px] sm:text-[18px] text-muted/50 leading-[1.75] font-normal">{post.excerpt}</p>
         </header>
 
         <article>
-          <div className="space-y-4 text-muted/70 text-[14px] sm:text-[15px] md:text-base leading-[1.85] font-normal">
+          <div className="space-y-4 text-muted/70 text-[16px] sm:text-[18px] leading-[1.85] font-normal">
             {post.content ? (
               post.content.split('\n\n').map((para, i) => {
                 if (para.trim().startsWith('•') || para.trim().startsWith('-')) {

@@ -41,7 +41,7 @@ export function Projects() {
       <div className="relative z-10">
         <div className="mb-3 sm:mb-4">
           <h2 className="text-[15px] sm:text-[17px] font-semibold text-ink mb-2 sm:mb-3">Work</h2>
-          <p className="text-[14px] sm:text-[15px] leading-[1.75] text-muted/70 font-medium max-w-xl">
+          <p className="text-[16px] sm:text-[18px] leading-[1.75] text-muted/70 font-medium max-w-xl">
             Below are some select projects, ranging from AI infrastructure to developer tooling.
           </p>
         </div>
@@ -171,12 +171,12 @@ export function Projects() {
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-8">
                   <div className="lg:col-span-2 space-y-6">
-                    <p className="text-[15px] sm:text-base text-ink leading-[1.75] font-medium">{selectedProject.description[0]}</p>
+                    <p className="text-[16px] sm:text-[18px] text-ink leading-[1.75] font-medium">{selectedProject.description[0]}</p>
                     <div className="space-y-3">
                       <span className="text-[12px] sm:text-[13px] text-muted/40 font-semibold block">Key achievements</span>
                       <ul className="space-y-2.5">
                         {selectedProject.description.slice(1).map((line, i) => (
-                          <li key={i} className="flex gap-3 text-[14px] sm:text-[15px] text-muted/70 leading-[1.75] font-normal">
+                          <li key={i} className="flex gap-3 text-[16px] sm:text-[18px] text-muted/70 leading-[1.75] font-normal">
                             <span className="text-accent mt-0.5 shrink-0">•</span>
                             <span>{line}</span>
                           </li>

@@ -1,0 +1,33 @@
+export interface Project {
+  id: string;
+  title: string;
+  description: string[];
+  tech: string[];
+  link?: string;
+  demoUrl?: string;
+}
+
+export interface Experience {
+  id: string;
+  role: string;
+  company: string;
+  location: string;
+  period: string;
+  highlights: string[];
+}
+
+export interface SkillGroup {
+  category: string;
+  skills: string[];
+}
+
+export interface BlogPost {
+  id: string;
+  slug: string;
+  title: string;
+  date: string;
+  excerpt: string;
+  content?: string;
+  category: string;
+  readTime: string;
+}

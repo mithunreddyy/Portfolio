@@ -72,7 +72,7 @@ export const login = async () => {
   } catch (error: any) {
     console.error('Login Error:', error);
     if (error.code === 'auth/unauthorized-domain') {
-      alert('Error: This domain (localhost) is not authorized in Firebase Console. Please add "localhost" to your Authorized Domains in Firebase Auth settings.');
+      alert(`Error: This domain (${window.location.hostname}) is not authorized in Firebase Console. Please add "${window.location.hostname}" to your Authorized Domains in Firebase Auth settings.`);
     } else {
       alert(`Login failed: ${error.message}`);
     }

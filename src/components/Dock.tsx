@@ -1,4 +1,4 @@
-import { AppWindow, Briefcase, Layers, LayoutGrid, Mail, MessageSquare, Moon, Pencil, Sun, User, Zap } from 'lucide-react';
+import { AppWindow, Briefcase, Layers, Mail, MessageSquare, Moon, Sun, User } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 
@@ -6,11 +6,8 @@ const dockItems = [
   { id: 'hero', icon: User, label: 'Profile' },
   { id: 'projects', icon: AppWindow, label: 'Work' },
   { id: 'experience', icon: Briefcase, label: 'Experience' },
-  { id: 'blog', icon: MessageSquare, label: 'Blog' },
   { id: 'skills', icon: Layers, label: 'Stack' },
-  { id: 'projects', icon: LayoutGrid, label: 'Portfolio' },
-  { id: 'blog', icon: Pencil, label: 'Journal' },
-  { id: 'skills', icon: Zap, label: 'Skills' },
+   { id: 'blog', icon: MessageSquare, label: 'Blog' },
   { id: 'contact', icon: Mail, label: 'Contact' },
 ];
 

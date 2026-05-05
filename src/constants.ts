@@ -1,4 +1,4 @@
-import { Project, Experience, SkillGroup, BlogPost } from './types';
+import { BlogPost, Experience, Project, SkillGroup } from './types';
 
 export const PERSONAL_INFO = {
   name: "Mithun Reddy",
@@ -59,10 +59,10 @@ export const PROJECTS: Project[] = [
     description: [
       "A privacy-first AI coding companion providing local intelligence directly within the VS Code environment.",
       "Built a robust FastAPI backend coordinating with a custom VS Code extension for seamless inline completions.",
-      "Implemented a hybrid indexing strategy using Qdrant vector search for high-dimensional code embeddings.",
-      "Optimized retrieval accuracy by combining semantic search with symbol-level context extraction."
+      "Implemented a hybrid indexing strategy using advanced symbol extraction for high-dimensional code analysis.",
+      "Optimized code completion accuracy by combining static analysis with symbol-level context extraction."
     ],
-    tech: ["Python", "TypeScript", "FastAPI", "Qdrant", "CodeLlama"],
+    tech: ["Python", "TypeScript", "FastAPI", "SQLite", "CodeLlama"],
     link: "https://github.com/mithunreddyy/localpilot"
   },
   {
@@ -83,11 +83,11 @@ export const PROJECTS: Project[] = [
 export const SKILL_GROUPS: SkillGroup[] = [
   {
     category: "Languages",
-    skills: ["TypeScript", "JavaScript (ES6+)", "Python", "SQL", "HTML5", "CSS3"]
+    skills: ["TypeScript", "JavaScript (ES6+)", "Python", "HTML5", "CSS3"]
   },
   {
     category: "AI & LLMs",
-    skills: ["LangChain", "LangGraph", "HuggingFace", "RAG", "Vector Databases", "PyTorch", "TensorFlow"]
+    skills: ["LangChain", "LangGraph", "HuggingFace", "PyTorch", "TensorFlow"]
   },
   {
     category: "Data Engineering",

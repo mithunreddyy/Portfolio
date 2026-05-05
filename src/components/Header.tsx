@@ -19,11 +19,12 @@ export function Header() {
 
   return (
     <header id="header" className="w-full bg-bg">
-      <div className="section-container h-12 sm:h-14 flex justify-between items-center text-[11px] sm:text-[12px] font-mono font-medium text-muted/50">
+      <div className="section-container h-12 sm:h-14 flex justify-between items-center text-[12px] sm:text-[14px] font-mono font-medium text-muted/60">
         <div>EST. {PERSONAL_INFO.birthYear}</div>
         <div className="flex items-center gap-1.5">
-          <Clock size={13} className="text-muted/30" />
+          <Clock size={16} className="text-muted/70" />
           <span className="text-ink/70">{timeString}</span>
+          <span className="text-muted/70">GMT+5:30</span>
         </div>
       </div>
     </header>

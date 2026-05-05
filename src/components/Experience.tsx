@@ -1,19 +1,16 @@
 import { motion } from 'motion/react';
-import { usePortfolioData } from '../hooks/usePortfolioData';
 import { SKILL_GROUPS } from '../constants';
+import { usePortfolioData } from '../hooks/usePortfolioData';
 
 const skillIconMap: Record<string, string> = {
   "TypeScript": "https://cdn.simpleicons.org/typescript/3178C6",
   "JavaScript (ES6+)": "https://cdn.simpleicons.org/javascript/F7DF1E",
   "Python": "https://cdn.simpleicons.org/python/3776AB",
-  "SQL": "https://cdn.simpleicons.org/postgresql/4169E1",
   "HTML5": "https://cdn.simpleicons.org/html5/E34F26",
-  "CSS3": "https://cdn.simpleicons.org/css3/1572B6",
-  "LangChain": "https://svgl.app/library/langchain.svg",
-  "LangGraph": "https://svgl.app/library/langchain.svg",
+  "CSS3": "https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original.svg",
+  "LangChain": "https://cdn.simpleicons.org/langchain/white",
+  "LangGraph": "https://cdn.simpleicons.org/langgraph/3399FF",
   "HuggingFace": "https://cdn.simpleicons.org/huggingface/FFD21E",
-  "RAG": "https://cdn.simpleicons.org/openai/412991",
-  "Vector Databases": "https://cdn.simpleicons.org/pinecone/12B886",
   "PyTorch": "https://cdn.simpleicons.org/pytorch/EE4C2C",
   "TensorFlow": "https://cdn.simpleicons.org/tensorflow/FF6F00",
   "PySpark": "https://cdn.simpleicons.org/apachespark/E25A1C",
@@ -22,9 +19,9 @@ const skillIconMap: Record<string, string> = {
   "MongoDB": "https://cdn.simpleicons.org/mongodb/47A248",
   "Redis": "https://cdn.simpleicons.org/redis/DC382D",
   "Cassandra": "https://cdn.simpleicons.org/apachecassandra/1287B1",
-  "AWS": "https://cdn.simpleicons.org/amazonwebservices/FF9900",
+  "AWS": "https://raw.githubusercontent.com/devicons/devicon/master/icons/amazonwebservices/amazonwebservices-original-wordmark.svg",
   "GCP": "https://cdn.simpleicons.org/googlecloud/4285F4",
-  "Azure": "https://cdn.simpleicons.org/microsoftazure/0078D4",
+  "Azure": "https://raw.githubusercontent.com/devicons/devicon/master/icons/azure/azure-original.svg",
   "Docker": "https://cdn.simpleicons.org/docker/2496ED",
   "TerraForm": "https://cdn.simpleicons.org/terraform/7B42BC",
   "GitHub Actions": "https://cdn.simpleicons.org/githubactions/2088FF"

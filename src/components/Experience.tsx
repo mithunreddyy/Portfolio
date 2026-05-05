@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { SKILL_GROUPS, EXPERIENCES } from '../constants';
+import { EXPERIENCES, SKILL_GROUPS } from '../constants';
 
 const skillIconMap: Record<string, string> = {
   "TypeScript": "https://cdn.simpleicons.org/typescript/3178C6",
@@ -80,7 +80,7 @@ export function ExperienceSection() {
 export function Skills() {
   return (
     <section id="skills" className="section-container pt-6 sm:pt-8 pb-8 sm:pb-12">
-      <h2 className="text-[15px] sm:text-[17px] font-semibold text-ink text-center mb-5 sm:mb-6">Stack</h2>
+      <h2 className="text-[15px] sm:text-[17px] font-semibold text-ink text-left mb-5 sm:mb-6">Stack</h2>
 
       <div className="flex flex-wrap justify-center gap-4 sm:gap-5">
         {allSkills.map((skill, i) => (

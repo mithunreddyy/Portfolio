@@ -1,14 +1,17 @@
-import { Briefcase, Code, Layout, Mail, Moon, PenTool, Sun, User } from 'lucide-react';
+import { AppWindow, Briefcase, Layers, LayoutGrid, Mail, MessageSquare, Moon, Pencil, Sun, User, Zap } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 
 const dockItems = [
-  { id: 'hero', icon: <User size={15} strokeWidth={1.5} />, label: 'Profile' },
-  { id: 'projects', icon: <Layout size={15} strokeWidth={1.5} />, label: 'Projects' },
-  { id: 'experience', icon: <Briefcase size={15} strokeWidth={1.5} />, label: 'Experience' },
-  { id: 'skills', icon: <Code size={15} strokeWidth={1.5} />, label: 'Stack' },
-  { id: 'blog', icon: <PenTool size={15} strokeWidth={1.5} />, label: 'Blog' },
-  { id: 'contact', icon: <Mail size={15} strokeWidth={1.5} />, label: 'Contact' },
+  { id: 'hero', icon: User, label: 'Profile' },
+  { id: 'projects', icon: AppWindow, label: 'Work' },
+  { id: 'experience', icon: Briefcase, label: 'Experience' },
+  { id: 'blog', icon: MessageSquare, label: 'Blog' },
+  { id: 'skills', icon: Layers, label: 'Stack' },
+  { id: 'projects', icon: LayoutGrid, label: 'Portfolio' },
+  { id: 'blog', icon: Pencil, label: 'Journal' },
+  { id: 'skills', icon: Zap, label: 'Skills' },
+  { id: 'contact', icon: Mail, label: 'Contact' },
 ];
 
 export function Dock() {
@@ -59,38 +62,46 @@ export function Dock() {
       initial={{ y: 60, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ type: 'spring', damping: 28, stiffness: 380, delay: 0.4 }}
-      className="fixed bottom-5 sm:bottom-6 left-0 right-0 z-[100] flex justify-center px-4 dock-safe-area"
+      className="fixed bottom-4 sm:bottom-6 lg:bottom-8 left-0 right-0 z-[100] flex justify-center px-4 dock-safe-area"
       aria-label="Navigation dock"
     >
-      <div className="flex items-center gap-0 h-10 px-1 bg-bg/80 rounded-full backdrop-blur-xl border border-ink/[0.08]">
-        {dockItems.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => scrollToSection(item.id)}
-            aria-label={item.label}
-            className={`relative w-9 h-9 flex items-center justify-center rounded-full transition-all duration-200 group ${activeSection === item.id ? 'text-ink' : 'text-muted/35 hover:text-muted/70'}`}
-          >
-            {item.icon}
-            {/* Tooltip */}
-            <div className="absolute -top-9 left-1/2 -translate-x-1/2 px-2.5 py-1 bg-ink text-bg rounded-md text-[9px] font-semibold tracking-wide opacity-0 group-hover:md:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
-              {item.label}
-            </div>
-            {activeSection === item.id && (
-              <motion.div
-                layoutId="dock-dot"
-                className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-0.5 h-0.5 bg-ink rounded-full"
-                transition={{ type: 'spring', bounce: 0.25, duration: 0.5 }}
-              />
-            )}
-          </button>
-        ))}
-        {/* Theme toggle — same size, no separator */}
+      <div className="flex items-center gap-[2px] sm:gap-1 h-[40px] sm:h-[44px] lg:h-[48px] px-1.5 sm:px-2 bg-[#111111] rounded-[16px] sm:rounded-[18px] border border-white/[0.08] shadow-2xl">
+        {dockItems.map((item, index) => {
+          const Icon = item.icon;
+          return (
+            <button
+              key={`${item.id}-${index}`}
+              onClick={() => scrollToSection(item.id)}
+              aria-label={item.label}
+              className={`relative flex items-center justify-center w-[32px] h-[32px] sm:w-[36px] sm:h-[36px] lg:w-[40px] lg:h-[40px] rounded-[10px] sm:rounded-[12px] transition-all duration-200 group ${
+                activeSection === item.id 
+                  ? 'text-white bg-white/[0.04]' 
+                  : 'text-[#888888] hover:text-white hover:bg-white/[0.04]'
+              }`}
+            >
+              <Icon className="w-[14px] h-[14px] sm:w-[16px] sm:h-[16px] lg:w-[18px] lg:h-[18px]" strokeWidth={1.25} />
+              
+              <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-[#111111] border border-white/[0.08] text-white rounded-[8px] text-[10px] sm:text-[11px] font-medium tracking-wide opacity-0 group-hover:md:opacity-100 transition-all scale-90 group-hover:scale-100 pointer-events-none whitespace-nowrap shadow-2xl z-[110]">
+                {item.label}
+              </div>
+            </button>
+          );
+        })}
+
+        <div className="w-[1px] h-4 sm:h-5 bg-white/[0.08] mx-0.5 sm:mx-1" />
+
         <button
           onClick={toggleTheme}
           aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-          className="w-9 h-9 flex items-center justify-center rounded-full transition-all duration-200 text-muted/35 hover:text-muted/70"
+          className="relative flex items-center justify-center w-[32px] h-[32px] sm:w-[36px] sm:h-[36px] lg:w-[40px] lg:h-[40px] rounded-[10px] sm:rounded-[12px] transition-all duration-200 text-[#888888] hover:text-white hover:bg-white/[0.04] group"
         >
-          {theme === 'dark' ? <Sun size={15} strokeWidth={1.6} /> : <Moon size={15} strokeWidth={1.6} />}
+          {theme === 'dark' 
+            ? <Sun className="w-[14px] h-[14px] sm:w-[16px] sm:h-[16px] lg:w-[18px] lg:h-[18px]" strokeWidth={1.25} /> 
+            : <Moon className="w-[14px] h-[14px] sm:w-[16px] sm:h-[16px] lg:w-[18px] lg:h-[18px]" strokeWidth={1.25} />}
+            
+          <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-[#111111] border border-white/[0.08] text-white rounded-[8px] text-[10px] sm:text-[11px] font-medium tracking-wide opacity-0 group-hover:md:opacity-100 transition-all scale-90 group-hover:scale-100 pointer-events-none whitespace-nowrap shadow-2xl z-[110]">
+            Theme
+          </div>
         </button>
       </div>
     </motion.nav>

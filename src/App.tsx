@@ -4,6 +4,7 @@
  */
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { Projects } from './components/Projects';
@@ -59,6 +60,7 @@ export default function App() {
           <Route path="/cms" element={<CMS />} />
           <Route path="/blog/:slug" element={<BlogPostView />} />
         </Routes>
+        <Analytics />
       </div>
     </Router>
   );

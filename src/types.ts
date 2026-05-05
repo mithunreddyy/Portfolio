@@ -31,3 +31,14 @@ export interface BlogPost {
   category: string;
   readTime: string;
 }
+
+export interface PersonalInfo {
+  name: string;
+  role: string;
+  location: string;
+  email: string;
+  github: string;
+  linkedin: string;
+  birthYear: number;
+  summary: string;
+}

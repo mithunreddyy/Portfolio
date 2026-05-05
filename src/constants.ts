@@ -8,7 +8,7 @@ export const PERSONAL_INFO = {
   github: "mithunreddyy",
   linkedin: "mithunreddyyy",
   birthYear: 1999,
-  summary: "Full-Stack Software Engineer & AI Enthusiast with over 2+ years of experience in designing scalable web architectures and machine learning pipelines. Proven ability to optimize backend databases, build retrieval-augmented generation systems, and automate data workflows to improve system performance."
+  summary: "a full-stack software engineer based in Hyderabad, India 🇮🇳 where I specialize in crafting scalable web architectures with a strong focus on machine learning pipelines, system performance, and backend optimization."
 };
 
 export const EXPERIENCES: Experience[] = [

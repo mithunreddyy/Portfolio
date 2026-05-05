@@ -55,5 +55,16 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
   throw new Error(JSON.stringify(errInfo));
 }
 
-export const login = () => signInWithPopup(auth, googleProvider);
+export const login = async () => {
+  try {
+    await signInWithPopup(auth, googleProvider);
+  } catch (error: any) {
+    console.error('Login Error:', error);
+    if (error.code === 'auth/unauthorized-domain') {
+      alert('Error: This domain (localhost) is not authorized in Firebase Console. Please add "localhost" to your Authorized Domains in Firebase Auth settings.');
+    } else {
+      alert(`Login failed: ${error.message}`);
+    }
+  }
+};
 export const logout = () => signOut(auth);

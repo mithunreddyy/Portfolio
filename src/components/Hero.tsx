@@ -1,13 +1,14 @@
 import { Copy, CopyCheck } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
-import { PERSONAL_INFO } from '../constants';
+import { usePortfolioData } from '../hooks/usePortfolioData';
 
 export function Hero() {
+  const { personalInfo } = usePortfolioData();
   const [copied, setCopied] = useState(false);
 
   const copyEmail = () => {
-    navigator.clipboard.writeText(PERSONAL_INFO.email);
+    navigator.clipboard.writeText(personalInfo.email);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -34,13 +35,13 @@ export function Hero() {
       >
         <div className="space-y-0">
           <div className="flex items-center gap-1">
-            <h1 className="text-2xl sm:text-[20px] font-medium text-ink tracking-tight">{PERSONAL_INFO.name}</h1>
+            <h1 className="text-2xl sm:text-[20px] font-medium text-ink tracking-tight">{personalInfo.name}</h1>
             <img src="/verified-badge.png" alt="Verified" className="w-4 h-4 sm:w-[18px] sm:h-[18px] object-contain shrink-0" />
           </div>
 
           {/* Role subtitle */}
           <p className="text-[16px] sm:text-[18px] text-muted/70 font-regular">
-            Full-Stack Software Engineer
+            {personalInfo.role}
           </p>
 
           {/* Location chip — like Core reference */}
@@ -52,7 +53,9 @@ export function Hero() {
 
         <div className="max-w-xl">
           <p className="text-[16px] sm:text-[18px] leading-[1.6] text-muted/75 font-regular">
-            Hey, I'm <span className="text-ink font-semibold">{PERSONAL_INFO.name.split(' ')[0]}</span>. {PERSONAL_INFO.summary}
+            Hey, I'm <span className="text-ink font-semibold">{personalInfo.name.split(' ')[0]}</span> {personalInfo.summary.split('🇮🇳')[0]}
+            <img src="/indian-flag.png" alt="India" className="inline-block w-[18px] h-[18px] sm:w-[22px] sm:h-[22px] mx-0.5 -translate-y-[2px]" />
+            {personalInfo.summary.split('🇮🇳')[1]}
           </p>
         </div>
 

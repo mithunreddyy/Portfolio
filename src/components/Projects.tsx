@@ -1,10 +1,11 @@
 import { ExternalLink, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useState, useEffect, useCallback } from 'react';
-import { PROJECTS } from '../constants';
+import { usePortfolioData } from '../hooks/usePortfolioData';
 import { Project } from '../types';
 
 export function Projects() {
+  const { projects } = usePortfolioData();
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -48,7 +49,7 @@ export function Projects() {
 
         {isMobile ? (
           <div className="space-y-3 mt-4 pb-4">
-            {PROJECTS.map((project, index) => (
+            {projects.map((project, index) => (
               <motion.div
                 key={project.id}
                 initial={{ opacity: 0, y: 15 }}
@@ -88,7 +89,7 @@ export function Projects() {
         ) : (
           <div className="relative h-[380px] lg:h-[400px] flex items-center justify-center overflow-visible mt-8 sm:mt-12">
             <div className="relative w-full h-full flex items-center justify-center">
-              {PROJECTS.map((project, index) => {
+              {projects.map((project, index) => {
                 const style = cardStyles[index % cardStyles.length];
                 // Responsive offset calculation
                 const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;

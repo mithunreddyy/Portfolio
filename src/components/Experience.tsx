@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
-import { EXPERIENCES, SKILL_GROUPS } from '../constants';
+import { usePortfolioData } from '../hooks/usePortfolioData';
+import { SKILL_GROUPS } from '../constants';
 
 const skillIconMap: Record<string, string> = {
   "TypeScript": "https://cdn.simpleicons.org/typescript/3178C6",
@@ -32,6 +33,7 @@ const skillIconMap: Record<string, string> = {
 const allSkills = SKILL_GROUPS.flatMap(g => g.skills);
 
 export function ExperienceSection() {
+  const { experiences } = usePortfolioData();
   return (
     <section id="experience" className="section-container pt-6 sm:pt-8 pb-6 sm:pb-8">
       <div className="mb-4 sm:mb-5">
@@ -42,7 +44,7 @@ export function ExperienceSection() {
       </div>
 
       <div className="space-y-6 sm:space-y-8">
-        {EXPERIENCES.map((exp, index) => (
+        {experiences.map((exp, index) => (
           <motion.div
             key={exp.id}
             initial={{ opacity: 0, y: 12 }}

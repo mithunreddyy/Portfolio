@@ -1,25 +1,10 @@
-import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { BLOG_POSTS } from '../constants';
-import { BlogPost } from '../types';
+import { usePortfolioData } from '../hooks/usePortfolioData';
 import { Clock, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { db, handleFirestoreError, OperationType } from '../lib/firebase';
-import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 
 export function Blog() {
-  const [blogs, setBlogs] = useState<BlogPost[]>([]);
-
-  useEffect(() => {
-    const q = query(collection(db, 'blogs'), orderBy('date', 'desc'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const docs = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as BlogPost));
-      setBlogs(docs.length > 0 ? docs : BLOG_POSTS);
-    }, (error) => {
-      handleFirestoreError(error, OperationType.LIST, 'blogs');
-    });
-    return () => unsubscribe();
-  }, []);
+  const { blogs } = usePortfolioData();
 
   return (
     <section id="blog" className="section-container pt-6 sm:pt-8 pb-6 sm:pb-8">

@@ -1,9 +1,10 @@
 import { useState, FormEvent } from 'react';
-import { PERSONAL_INFO } from '../constants';
+import { usePortfolioData } from '../hooks/usePortfolioData';
 import { Mail, Github, Linkedin, Twitter, ArrowUpRight, MapPin } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export function Footer() {
+  const { personalInfo } = usePortfolioData();
   const currentYear = new Date().getFullYear();
   const [formState, setFormState] = useState({ name: '', email: '', message: '' });
   const [status, setStatus] = useState<'idle' | 'error' | 'success'>('idle');
@@ -23,10 +24,9 @@ export function Footer() {
   };
 
   const socials = [
-    { label: 'Email', value: PERSONAL_INFO.email, icon: <Mail size={16} />, href: `mailto:${PERSONAL_INFO.email}` },
-    { label: 'X.com', value: '@mithunreddy', icon: <Twitter size={16} />, href: '#' },
-    { label: 'GitHub', value: `@${PERSONAL_INFO.github}`, icon: <Github size={16} />, href: `https://github.com/${PERSONAL_INFO.github}` },
-    { label: 'LinkedIn', value: `/in/${PERSONAL_INFO.linkedin}`, icon: <Linkedin size={16} />, href: `https://linkedin.com/in/${PERSONAL_INFO.linkedin}` }
+    { label: 'Email', value: personalInfo.email, icon: <Mail size={16} />, href: `mailto:${personalInfo.email}` },
+    { label: 'GitHub', value: `@${personalInfo.github}`, icon: <Github size={16} />, href: `https://github.com/${personalInfo.github}` },
+    { label: 'LinkedIn', value: `/in/${personalInfo.linkedin}`, icon: <Linkedin size={16} />, href: `https://linkedin.com/in/${personalInfo.linkedin}` }
   ];
 
   return (

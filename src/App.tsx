@@ -3,19 +3,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
+import { motion, useScroll, useSpring } from 'motion/react';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { Blog } from './components/Blog';
+import { BlogPostView } from './components/BlogPostView';
+import { CMS } from './components/CMS';
+import { Dock } from './components/Dock';
+import { ExperienceSection, Skills } from './components/Experience';
+import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { Projects } from './components/Projects';
-import { ExperienceSection, Skills } from './components/Experience';
-import { Blog } from './components/Blog';
-import { CMS } from './components/CMS';
-import { BlogPostView } from './components/BlogPostView';
-import { Footer } from './components/Footer';
-import { Dock } from './components/Dock';
 import { SEO } from './components/SEO';
-import { motion, useScroll, useSpring } from 'motion/react';
 
 function Portfolio() {
   const { scrollYProgress } = useScroll();

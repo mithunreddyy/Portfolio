@@ -154,10 +154,17 @@ export function CMS() {
         email,
         options: { emailRedirectTo: window.location.origin + "/cms" },
       });
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase auth error:", error);
+        throw error;
+      }
       setMagicLinkSent(true);
     } catch (err: any) {
-      setError(err.message);
+      console.error("Login error:", err);
+      setError(
+        err.message ||
+          "Authentication failed. Please check your connection and try again.",
+      );
     } finally {
       setAuthLoading(false);
     }

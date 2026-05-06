@@ -1,4 +1,4 @@
-import { Copy, CopyCheck } from 'lucide-react';
+import { Copy, CopyCheck, Eye, FileDown } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { usePortfolioData } from '../hooks/usePortfolioData';
@@ -13,17 +13,38 @@ export function Hero() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const viewResume = () => {
+    window.open(personalInfo.resumeUrl, '_blank');
+  };
+
+  const downloadResume = () => {
+    const link = document.createElement('a');
+    link.href = personalInfo.resumeUrl;
+    link.download = 'Mithun_Reddy_Resume.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.key.toLowerCase() === 'm' && !e.metaKey && !e.ctrlKey) {
-        const target = e.target as HTMLElement;
-        if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return;
+      if (e.metaKey || e.ctrlKey) return;
+      
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return;
+
+      const key = e.key.toLowerCase();
+      if (key === 'm') {
         copyEmail();
+      } else if (key === 'v') {
+        viewResume();
+      } else if (key === 'd') {
+        downloadResume();
       }
     };
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, []);
+  }, [personalInfo.email, personalInfo.resumeUrl]);
 
   return (
     <section id="hero" className="section-container pt-6 sm:pt-8 pb-8 sm:pb-10">
@@ -59,38 +80,75 @@ export function Hero() {
           </p>
         </div>
 
-        {/* Copy Email CTA */}
-        <div className="relative">
-          <button
-            onClick={copyEmail}
-            className="hidden sm:flex items-center gap-2.5 text-[16px] sm:text-[18px] font-medium text-muted/60 transition-colors hover:text-ink group"
-          >
+        {/* CTAs */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-10 pt-2">
+          {/* Copy Email CTA */}
+          <div className="relative">
+            <button
+              onClick={copyEmail}
+              className="hidden sm:flex items-center gap-2 text-[14px] sm:text-[15px] font-medium text-muted/60 transition-colors hover:text-ink group"
+            >
+              <span>Press</span>
+              <span className="flex items-center justify-center w-[22px] h-[22px] rounded-md bg-ink/[0.08] text-ink text-[11px] font-bold shadow-sm group-hover:bg-ink/[0.15] transition-colors uppercase">M</span>
+              <span>to copy email</span>
+            </button>
+
+            <button
+              onClick={copyEmail}
+              className="flex sm:hidden items-center gap-2 text-[13px] font-medium text-muted/50 active:text-ink transition-colors py-1"
+            >
+              <Copy size={13} className="text-muted/40" />
+              <span>Tap to copy email</span>
+            </button>
+
+            <AnimatePresence>
+              {copied && (
+                <motion.div
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
+                  className="absolute left-0 -bottom-6 flex items-center gap-2 text-accent"
+                >
+                  <CopyCheck size={10} />
+                  <span className="text-[9px] font-bold uppercase tracking-[0.2em]">Email copied!</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Resume CTAs (Desktop Combined) */}
+          <div className="hidden sm:flex items-center gap-2.5 text-[14px] sm:text-[15px] font-medium text-muted/60">
             <span>Press</span>
-            <span className="flex items-center justify-center w-[24px] h-[24px] rounded-md bg-ink/[0.08] text-ink text-[12px] font-bold shadow-sm group-hover:bg-ink/[0.15] transition-colors">M</span>
-            <span>to copy my email</span>
-          </button>
+            <button onClick={viewResume} className="flex items-center gap-2 hover:text-ink transition-colors group">
+              <span className="flex items-center justify-center w-[22px] h-[22px] rounded-md bg-ink/[0.08] text-ink text-[11px] font-bold shadow-sm group-hover:bg-ink/[0.15] transition-colors uppercase">V</span>
+              <span>to view</span>
+            </button>
+            <span className="text-muted/60">&</span>
+            <button onClick={downloadResume} className="flex items-center gap-2 hover:text-ink transition-colors group">
+              <span className="flex items-center justify-center w-[22px] h-[22px] rounded-md bg-ink/[0.08] text-ink text-[11px] font-bold shadow-sm group-hover:bg-ink/[0.15] transition-colors uppercase">D</span>
+              <span>to download</span>
+            </button>
+            <span>resume</span>
+          </div>
 
-          <button
-            onClick={copyEmail}
-            className="flex sm:hidden items-center gap-2 text-[14px] font-medium text-muted/50 active:text-ink transition-colors py-1.5"
-          >
-            <Copy size={14} className="text-muted/40" />
-            <span>Tap to copy my email</span>
-          </button>
+          {/* Resume CTAs (Mobile Separate) */}
+          <div className="flex sm:hidden items-center gap-6">
+            <button
+              onClick={viewResume}
+              className="flex items-center gap-2 text-[13px] font-medium text-muted/50 active:text-ink transition-colors py-1"
+            >
+              <Eye size={13} className="text-muted/40" />
+              <span>View resume</span>
+            </button>
 
-          <AnimatePresence>
-            {copied && (
-              <motion.div
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -5 }}
-                className="absolute left-0 -bottom-7 flex items-center gap-2 text-accent"
-              >
-                <CopyCheck size={12} />
-                <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Email copied!</span>
-              </motion.div>
-            )}
-          </AnimatePresence>
+            <button
+              onClick={downloadResume}
+              className="flex items-center gap-2 text-[13px] font-medium text-muted/50 active:text-ink transition-colors py-1"
+            >
+              <FileDown size={13} className="text-muted/40" />
+              <span>Download</span>
+            </button>
+          </div>
         </div>
       </motion.div>
     </section>

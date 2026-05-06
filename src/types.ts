@@ -40,5 +40,6 @@ export interface PersonalInfo {
   github: string;
   linkedin: string;
   birthYear: number;
+  resumeUrl: string;
   summary: string;
 }

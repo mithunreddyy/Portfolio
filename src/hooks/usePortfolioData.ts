@@ -27,7 +27,9 @@ export function usePortfolioData() {
         if (prof) {
           setPersonalInfo({
             ...PERSONAL_INFO,
-            ...prof,
+            ...Object.fromEntries(
+              Object.entries(prof).filter(([_, value]) => value != null),
+            ),
             birthYear: prof.birth_year || PERSONAL_INFO.birthYear,
             resumeUrl: prof.resume_url || PERSONAL_INFO.resumeUrl,
           });

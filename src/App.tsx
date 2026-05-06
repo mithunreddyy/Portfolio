@@ -1,9 +1,3 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import { Analytics } from '@vercel/analytics/react';
 import { motion, useScroll, useSpring } from 'motion/react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Blog } from './components/Blog';
@@ -16,8 +10,10 @@ import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { Projects } from './components/Projects';
 import { SEO } from './components/SEO';
+import { usePortfolioData } from './hooks/usePortfolioData';
 
 function Portfolio() {
+  const { personalInfo, projects, experiences, blogs, loading } = usePortfolioData();
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -25,11 +21,19 @@ function Portfolio() {
     restDelta: 0.001
   });
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-bg flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-accent/20 border-t-accent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="relative font-sans">
       <SEO />
 
-      <Header />
+      <Header personalInfo={personalInfo} />
       <Dock />
 
       {/* Scroll progress indicator */}
@@ -39,11 +43,11 @@ function Portfolio() {
       />
 
       <main className="relative z-10">
-        <Hero />
-        <Projects />
-        <ExperienceSection />
+        <Hero personalInfo={personalInfo} />
+        <Projects projects={projects} />
+        <ExperienceSection experiences={experiences} />
         <Skills />
-        <Blog />
+        <Blog blogs={blogs} />
       </main>
 
       <Footer />
@@ -60,7 +64,6 @@ export default function App() {
           <Route path="/cms" element={<CMS />} />
           <Route path="/blog/:slug" element={<BlogPostView />} />
         </Routes>
-        <Analytics />
       </div>
     </Router>
   );

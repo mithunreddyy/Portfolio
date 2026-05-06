@@ -4,8 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { usePortfolioData } from '../hooks/usePortfolioData';
 import { Project } from '../types';
 
-export function Projects() {
-  const { projects } = usePortfolioData();
+export function Projects({ projects }: { projects: Project[] }) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isMobile, setIsMobile] = useState(false);
 

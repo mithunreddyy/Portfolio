@@ -30,6 +30,7 @@ export interface BlogPost {
   content?: string;
   category: string;
   readTime: string;
+  published?: boolean;
 }
 
 export interface PersonalInfo {

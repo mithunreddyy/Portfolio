@@ -29,8 +29,9 @@ const skillIconMap: Record<string, string> = {
 
 const allSkills = SKILL_GROUPS.flatMap(g => g.skills);
 
-export function ExperienceSection() {
-  const { experiences } = usePortfolioData();
+import { Experience } from '../types';
+
+export function ExperienceSection({ experiences }: { experiences: Experience[] }) {
   return (
     <section id="experience" className="section-container pt-6 sm:pt-8 pb-6 sm:pb-8">
       <div className="mb-4 sm:mb-5">

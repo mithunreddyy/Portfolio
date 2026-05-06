@@ -31,11 +31,42 @@
     @apply bg-bg text-ink font-sans antialiased selection:bg-accent/20 selection:text-ink;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
+    position: relative;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+    opacity: 0.04;
+    pointer-events: none;
+    z-index: 50;
+    filter: contrast(150%) brightness(100%);
+  }
+
+  /* Subtle spotlight effect */
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% -20%, var(--color-accent) 0%, transparent 50%);
+    opacity: 0.05;
+    pointer-events: none;
+    z-index: 1;
   }
 
   #root {
     overflow-x: hidden;
     min-height: 100dvh;
+    position: relative;
+    z-index: 10;
   }
 
   button, a {

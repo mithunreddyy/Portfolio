@@ -3,8 +3,9 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { usePortfolioData } from '../hooks/usePortfolioData';
 
-export function Hero() {
-  const { personalInfo } = usePortfolioData();
+import { PersonalInfo } from '../types';
+
+export function Hero({ personalInfo }: { personalInfo: PersonalInfo }) {
   const [copied, setCopied] = useState(false);
 
   const copyEmail = () => {
@@ -54,29 +55,40 @@ export function Hero() {
         transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
         className="space-y-5 sm:space-y-6"
       >
-        <div className="space-y-0">
-          <div className="flex items-center gap-1">
-            <h1 className="text-2xl sm:text-[20px] font-medium text-ink tracking-tight">{personalInfo.name}</h1>
-            <img src="/verified-badge.png" alt="Verified" className="w-4 h-4 sm:w-[18px] sm:h-[18px] object-contain shrink-0" />
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <h1 className="text-2xl sm:text-[20px] font-semibold text-ink tracking-tight">{personalInfo.name}</h1>
+              <img src="/verified-badge.png" alt="Verified" className="w-4 h-4 sm:w-[18px] sm:h-[18px] object-contain shrink-0" />
+            </div>
+
+            {/* Live Indicator */}
+            <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-accent/5 border border-accent/10">
+              <div className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
+              </div>
+              <span className="text-[10px] sm:text-[11px] font-medium text-accent uppercase tracking-wider">Available for work</span>
+            </div>
           </div>
 
           {/* Role subtitle */}
-          <p className="text-[16px] sm:text-[18px] text-muted/70 font-regular">
-            {personalInfo.role}
-          </p>
-
-          {/* Location chip — like Core reference */}
-          {/* <div className="flex items-center gap-1.5 text-[11px] sm:text-[12px] text-muted/40 font-medium">
-            <MapPin size={12} className="text-muted/30" />
-            <span>{PERSONAL_INFO.location}</span>
-          </div> */}
+          <div className="flex items-center gap-2 text-[16px] sm:text-[18px] text-muted/80 font-regular">
+            <span>{personalInfo.role}</span>
+            <span className="text-muted/20 text-[12px] sm:text-[14px]">/</span>
+            <span className="text-muted/60">{personalInfo.location}</span>
+          </div>
         </div>
 
         <div className="max-w-xl">
           <p className="text-[16px] sm:text-[18px] leading-[1.6] text-muted/75 font-regular">
-            Hey, I'm <span className="text-ink font-semibold">{personalInfo.name.split(' ')[0]}</span> {personalInfo.summary.split('🇮🇳')[0]}
-            <img src="/indian-flag.png" alt="India" className="inline-block w-[18px] h-[18px] sm:w-[22px] sm:h-[22px] mx-0.5 -translate-y-[2px]" />
-            {personalInfo.summary.split('🇮🇳')[1]}
+            Hey, I'm <span className="text-ink font-semibold">{(personalInfo.name || '').split(' ')[0]}</span> {(personalInfo.summary || '').includes('🇮🇳') 
+              ? (personalInfo.summary || '').split('🇮🇳')[0] 
+              : (personalInfo.summary || '')}
+            {(personalInfo.summary || '').includes('🇮🇳') && (
+              <img src="/indian-flag.png" alt="India" className="inline-block w-[18px] h-[18px] sm:w-[22px] sm:h-[22px] mx-0.5 -translate-y-[2px]" />
+            )}
+            {(personalInfo.summary || '').includes('🇮🇳') && (personalInfo.summary || '').split('🇮🇳')[1]}
           </p>
         </div>
 

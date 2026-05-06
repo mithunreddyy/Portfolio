@@ -1,15 +1,18 @@
-import { motion } from 'motion/react';
-import { usePortfolioData } from '../hooks/usePortfolioData';
-import { Clock, ChevronRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { ChevronRight, Clock } from "lucide-react";
+import { motion } from "motion/react";
+import { Link } from "react-router-dom";
+import { usePortfolioData } from "../hooks/usePortfolioData";
 
-export function Blog() {
-  const { blogs } = usePortfolioData();
+import { BlogPost } from "../types";
+
+export function Blog({ blogs }: { blogs: BlogPost[] }) {
 
   return (
     <section id="blog" className="section-container pt-6 sm:pt-8 pb-6 sm:pb-8">
       <div className="mb-3 sm:mb-4">
-        <h2 className="text-[15px] sm:text-[17px] font-semibold text-ink">Writing</h2>
+        <h2 className="text-[15px] sm:text-[17px] font-semibold text-ink">
+          Writing
+        </h2>
       </div>
 
       <div className="flex flex-col">
@@ -34,7 +37,7 @@ export function Blog() {
                 </h3>
                 <div className="flex items-center gap-1.5 text-[11px] sm:text-[12px] font-mono text-muted/50 shrink-0">
                   <Clock size={11} className="opacity-60" />
-                  <span>{post.readTime.replace(/[^0-9]/g, '')} m</span>
+                  <span>{(post.readTime || "").replace(/[^0-9]/g, "")} m</span>
                   <ChevronRight size={12} className="text-muted/20 sm:hidden" />
                 </div>
               </div>
@@ -44,7 +47,10 @@ export function Blog() {
       </div>
 
       <div className="mt-6 flex justify-start">
-        <Link to="/cms" className="text-[11px] font-medium text-muted/15 hover:text-muted/50 active:text-ink transition-colors py-1.5">
+        <Link
+          to="/cms"
+          className="text-[11px] font-medium text-muted/15 hover:text-muted/50 active:text-ink transition-colors py-1.5"
+        >
           Manage posts →
         </Link>
       </div>

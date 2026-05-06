@@ -1,12 +1,85 @@
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { ArrowLeft, Clock, Tag } from 'lucide-react';
-import { motion } from 'motion/react';
-import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { BLOG_POSTS } from '../constants';
-import { db, handleFirestoreError, OperationType } from '../lib/firebase';
-import { BlogPost } from '../types';
-import { SEO } from './SEO';
+import { ArrowLeft } from "lucide-react";
+import { motion } from "motion/react";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { BLOG_POSTS } from "../constants";
+import { supabase } from "../lib/supabase";
+import { BlogPost } from "../types";
+import { SEO } from "./SEO";
+
+type ContentBlock =
+  | { type: "heading"; text: string }
+  | { type: "paragraph"; text: string }
+  | { type: "list"; style: "bullet" | "number"; items: string[] };
+
+const parseContent = (content: string): ContentBlock[] => {
+  const blocks: ContentBlock[] = [];
+  let currentBlock: ContentBlock | null = null;
+
+  const flush = () => {
+    if (currentBlock) {
+      blocks.push(currentBlock);
+      currentBlock = null;
+    }
+  };
+
+  const lines = content.split("\n");
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+
+    if (!line) {
+      flush();
+      continue;
+    }
+
+    const headingMatch = line.match(/^(.+?):$/);
+    const bulletMatch = line.match(/^[•*-]\s+(.*)$/);
+    const orderedMatch = line.match(/^\d+\.\s+(.*)$/);
+
+    if (headingMatch && line.endsWith(":")) {
+      flush();
+      currentBlock = { type: "heading", text: headingMatch[1] };
+      flush();
+      continue;
+    }
+
+    if (bulletMatch) {
+      if (currentBlock?.type === "list" && currentBlock.style === "bullet") {
+        currentBlock.items.push(bulletMatch[1]);
+      } else {
+        flush();
+        currentBlock = {
+          type: "list",
+          style: "bullet",
+          items: [bulletMatch[1]],
+        };
+      }
+      continue;
+    }
+
+    if (orderedMatch) {
+      const lineText = orderedMatch[1];
+      if (currentBlock?.type === "list" && currentBlock.style === "number") {
+        currentBlock.items.push(lineText);
+      } else {
+        flush();
+        currentBlock = { type: "list", style: "number", items: [lineText] };
+      }
+      continue;
+    }
+
+    if (currentBlock?.type === "paragraph") {
+      currentBlock.text += ` ${line}`;
+    } else {
+      flush();
+      currentBlock = { type: "paragraph", text: line };
+    }
+  }
+
+  flush();
+  return blocks;
+};
 
 export function BlogPostView() {
   const { slug } = useParams();
@@ -17,17 +90,26 @@ export function BlogPostView() {
     const fetchPost = async () => {
       setLoading(true);
       try {
-        const q = query(collection(db, 'blogs'), where('slug', '==', slug));
-        const snapshot = await getDocs(q);
-        if (!snapshot.empty) {
-          const doc = snapshot.docs[0];
-          setPost({ id: doc.id, ...doc.data() } as BlogPost);
+        const { data, error } = await supabase
+          .from("blogs")
+          .select("*")
+          .eq("slug", slug)
+          .single();
+
+        if (data && !error) {
+          setPost(data as BlogPost);
         } else {
+          // Fallback to local constants
           const found = BLOG_POSTS.find((b: BlogPost) => b.slug === slug);
           setPost(found || null);
         }
       } catch (error) {
-        handleFirestoreError(error, OperationType.GET, `blogs?slug=${slug}`);
+        console.error(
+          "Supabase fetch error, falling back to local constants",
+          error,
+        );
+        const found = BLOG_POSTS.find((b: BlogPost) => b.slug === slug);
+        setPost(found || null);
       } finally {
         setLoading(false);
       }
@@ -52,17 +134,27 @@ export function BlogPostView() {
       <div className="min-h-screen bg-bg flex items-center justify-center px-5">
         <div className="text-center">
           <h1 className="text-xl font-bold text-ink mb-4">Post not found</h1>
-          <Link to="/" className="text-accent hover:underline text-[12px] font-semibold py-2 inline-block">Back to home</Link>
+          <Link
+            to="/"
+            className="text-accent hover:underline text-[12px] font-semibold py-2 inline-block"
+          >
+            Back to home
+          </Link>
         </div>
       </div>
     );
   }
 
+  const contentBlocks = post.content ? parseContent(post.content) : [];
+  const wordCount = post.content
+    ? post.content.split(/\s+/).filter(Boolean).length
+    : 0;
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen bg-bg text-ink py-8 px-5 sm:py-12 sm:px-6 md:py-16"
+      className="min-h-screen bg-bg text-ink py-10 px-5 sm:py-14 sm:px-6 md:py-16"
     >
       <SEO
         title={post.title}
@@ -71,87 +163,117 @@ export function BlogPostView() {
         schema={{
           "@context": "https://schema.org",
           "@type": "BlogPosting",
-          "headline": post.title,
-          "description": post.excerpt,
-          "author": { "@type": "Person", "name": "Mithun Reddy" },
-          "datePublished": post.date,
-          "mainEntityOfPage": { "@type": "WebPage", "@id": `https://mithunreddy.dev/blog/${post.slug}` }
+          headline: post.title,
+          description: post.excerpt,
+          author: { "@type": "Person", name: "Mithun Reddy" },
+          datePublished: post.date,
+          mainEntityOfPage: {
+            "@type": "WebPage",
+            "@id": `https://mithunreddy.dev/blog/${post.slug}`,
+          },
         }}
       />
-      <div className="max-w-[680px] mx-auto">
-        <Link to="/" className="inline-flex items-center gap-2 text-[12px] font-medium text-muted/40 mb-6 sm:mb-8 hover:text-ink active:text-ink transition-colors py-1.5">
+
+      <div className="max-w-[740px] mx-auto">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-2 text-[12px] font-medium text-muted/40 hover:text-ink hover:border-white/15 transition-colors"
+        >
           <ArrowLeft size={14} className="shrink-0" /> Back
         </Link>
 
-        <header className="mb-8 sm:mb-10">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-[11px] sm:text-[12px] font-medium text-muted/40 mb-4 sm:mb-5 gap-2">
+        <header className="mt-8 mb-10">
+          <div className="flex flex-wrap items-center gap-3 text-[11px] sm:text-[12px] uppercase tracking-[0.26em] font-medium text-muted/50 mb-5">
+            <span className="inline-flex items-center rounded-full border border-muted/15 px-3 py-1 text-muted/60">
+              {post.category}
+            </span>
             <span>{post.date}</span>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1.5">
-                <Clock size={11} className="opacity-50" />
-                <span>{post.readTime.replace(/[^0-9]/g, '')} min read</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <Tag size={11} className="opacity-50" />
-                <span>{post.content ? post.content.split(/\s+/).filter(Boolean).length : 0} words</span>
-              </div>
-            </div>
+            <span>{(post.readTime || "").replace(/[^0-9]/g, "")} min read</span>
+            <span>{wordCount} words</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight leading-[1.15] text-ink mb-3">{post.title}</h1>
-          <p className="text-[16px] sm:text-[18px] text-muted/50 leading-[1.75] font-normal">{post.excerpt}</p>
+
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-[1.05] text-ink mb-4">
+            {post.title}
+          </h1>
+          <p className="max-w-[680px] text-[17px] sm:text-[18px] text-muted/50 leading-[1.8]">
+            {post.excerpt}
+          </p>
         </header>
 
-        <article>
-          <div className="space-y-4 text-muted/70 text-[16px] sm:text-[18px] leading-[1.85] font-normal">
-            {post.content ? (
-              post.content.split('\n\n').map((para, i) => {
-                if (para.trim().startsWith('•') || para.trim().startsWith('-')) {
-                  const items = para.split('\n').filter(Boolean);
+        <article className="rounded-[32px] border border-white/10 bg-ink/5 p-6 sm:p-8 md:p-10 shadow-[0_40px_120px_-80px_rgba(15,23,42,0.55)]">
+          <div className="space-y-8 text-[16px] sm:text-[18px] leading-[1.85] text-muted/70 font-normal">
+            {contentBlocks.length ? (
+              contentBlocks.map((block, index) => {
+                if (block.type === "heading") {
                   return (
-                    <ul key={i} className="space-y-2.5 py-1">
-                      {items.map((item, idx) => (
-                        <li key={idx} className="flex gap-3">
-                          <span className="text-muted/20 shrink-0">•</span>
-                          <span>{item.replace(/^[•-]\s*/, '')}</span>
-                        </li>
-                      ))}
-                    </ul>
+                    <h2
+                      key={index}
+                      className="text-lg sm:text-xl font-semibold text-ink leading-[1.3]"
+                    >
+                      {block.text}
+                    </h2>
                   );
                 }
-                if (/^\d+\.\s/.test(para.trim())) {
-                  const items = para.split('\n').filter(Boolean);
+
+                if (block.type === "paragraph") {
                   return (
-                    <div key={i} className="space-y-3 py-1">
-                      {items.map((item, idx) => (
-                        <div key={idx} className="space-y-1">
-                          {item.includes(':') ? (
-                            <>
-                              <p className="text-ink font-bold text-[14px]">{item.split(':')[0]}:</p>
-                              <p className="pl-4">{item.split(':').slice(1).join(':').trim()}</p>
-                            </>
-                          ) : (
-                            <p>{item}</p>
-                          )}
-                        </div>
-                      ))}
-                    </div>
+                    <p
+                      key={index}
+                      className="text-[17px] sm:text-[18px] leading-[1.95] text-muted/80"
+                    >
+                      {block.text}
+                    </p>
                   );
                 }
-                return <p key={i} className={i === 0 ? "text-muted block first-letter:text-ink" : ""}>{para}</p>;
+
+                return (
+                  <div key={index}>
+                    {block.style === "number" ? (
+                      <ol className="space-y-4 list-decimal list-inside text-muted/70">
+                        {block.items.map((item, itemIndex) => (
+                          <li key={itemIndex} className="pl-2 text-ink">
+                            {item}
+                          </li>
+                        ))}
+                      </ol>
+                    ) : (
+                      <ul className="space-y-3 list-none">
+                        {block.items.map((item, itemIndex) => (
+                          <li key={itemIndex} className="flex gap-3">
+                            <span className="mt-1 text-accent">•</span>
+                            <span className="text-ink/90">{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                );
               })
             ) : (
-              <p>No content available for this post.</p>
+              <p className="text-[17px] text-muted/70">
+                No content available for this post.
+              </p>
             )}
           </div>
         </article>
 
-        <footer className="mt-10 pt-6">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-ink/[0.04] shrink-0" />
-            <div>
-              <span className="text-ink font-bold text-[14px]">Mithun Reddy</span>
-              <span className="text-[11px] text-muted/35 font-medium block mt-0.5">Software Engineer</span>
+        <footer className="mt-12 pt-6 border-t border-white/10">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-full bg-ink/[0.08] shrink-0" />
+              <div>
+                <p className="text-[14px] font-semibold text-ink">
+                  Mithun Reddy
+                </p>
+                <p className="text-[11px] text-muted/45 uppercase tracking-[0.18em]">
+                  Software Engineer
+                </p>
+              </div>
             </div>
+            <p className="text-sm text-muted/50 max-w-[420px] leading-[1.7]">
+              Building modern digital experiences that bridge product design and
+              engineering with thoughtful UI and robust performance.
+            </p>
           </div>
         </footer>
       </div>

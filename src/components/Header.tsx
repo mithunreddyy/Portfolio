@@ -1,8 +1,8 @@
 import { Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { PERSONAL_INFO } from '../constants';
+import { PersonalInfo } from '../types';
 
-export function Header() {
+export function Header({ personalInfo }: { personalInfo?: PersonalInfo }) {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export function Header() {
   return (
     <header id="header" className="w-full bg-bg">
       <div className="section-container h-12 sm:h-14 flex justify-between items-center text-[12px] sm:text-[14px] font-mono font-medium text-muted/60">
-        <div>EST. {PERSONAL_INFO.birthYear}</div>
+        <div>EST. {personalInfo?.birthYear || '----'}</div>
         <div className="flex items-center gap-1.5">
           <Clock size={16} className="text-muted/70" />
           <span className="text-ink/70">{timeString}</span>

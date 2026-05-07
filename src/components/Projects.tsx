@@ -30,15 +30,16 @@ export function Projects({ projects }: { projects: Project[] }) {
   }, [handleKeyDown]);
 
   const cardStyles = [
-    { rotate: -4, x: -15, mdX: -180, y: 0, zIndex: 10 },
-    { rotate: 3, x: 15, mdX: 180, y: -10, zIndex: 12 },
-    { rotate: -2, x: 0, mdX: 0, y: 40, zIndex: 11 },
+    { rotate: -4, x: 0, mdX: -320, y: -60, zIndex: 10 },
+    { rotate: 4, x: 0, mdX: -140, y: 60, zIndex: 20 },
+    { rotate: -4, x: 0, mdX: 140, y: -60, zIndex: 10 },
+    { rotate: 4, x: 0, mdX: 320, y: 60, zIndex: 20 },
   ];
 
   return (
-    <section id="projects" className="section-container pt-3 sm:pt-4 pb-4 sm:pb-6 relative overflow-visible">
+    <section id="projects" className="w-full pt-3 sm:pt-4 pb-4 sm:pb-6 relative overflow-visible">
       <div className="relative z-10">
-        <div className="mb-3 sm:mb-4">
+        <div className="section-container mb-3 sm:mb-4">
           <h2 className="text-[15px] sm:text-[17px] font-semibold text-ink mb-2 sm:mb-3">Work</h2>
           <p className="text-[16px] sm:text-[18px] leading-[1.75] text-muted/70 font-medium max-w-xl">
             Below are some select projects, ranging from AI infrastructure to developer tooling.
@@ -46,7 +47,7 @@ export function Projects({ projects }: { projects: Project[] }) {
         </div>
 
         {isMobile ? (
-          <div className="space-y-2.5 mt-3 pb-2">
+          <div className="section-container space-y-2.5 mt-3 pb-2">
             {projects.map((project, index) => (
               <motion.div
                 key={project.id}
@@ -64,8 +65,8 @@ export function Projects({ projects }: { projects: Project[] }) {
                     <div className="w-1.5 h-1.5 rounded-full bg-green-500/20 border border-green-500/30" />
                     <div className="ml-2 flex-1 h-3 bg-ink/5 rounded-full" />
                   </div>
-                  <div className="p-4 flex flex-col gap-3">
-                    <div className="space-y-1.5">
+                  <div className="p-3.5 flex flex-col gap-2.5">
+                    <div className="space-y-1">
                       <h3 className="text-[14px] font-bold text-ink tracking-tight">{project.title}</h3>
                       <p className="text-[12px] text-muted/50 leading-relaxed line-clamp-2">{project.description[0]}</p>
                     </div>
@@ -85,7 +86,7 @@ export function Projects({ projects }: { projects: Project[] }) {
             ))}
           </div>
         ) : (
-          <div className="relative h-[340px] lg:h-[370px] flex items-center justify-center overflow-visible mt-4 sm:mt-6">
+          <div className="relative h-[380px] lg:h-[420px] flex items-center justify-center overflow-visible mt-4 sm:mt-6 max-w-[1200px] mx-auto px-10">
             <div className="relative w-full h-full flex items-center justify-center">
               {projects.map((project, index) => {
                 const style = cardStyles[index % cardStyles.length];
@@ -113,14 +114,14 @@ export function Projects({ projects }: { projects: Project[] }) {
                     style={{ zIndex: style.zIndex }}
                   >
                     <div className="bg-bg rounded-2xl shadow-[0_30px_80px_-15px_rgba(0,0,0,0.7)] group-hover:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.9)] overflow-hidden w-[280px] md:w-[300px] lg:w-[320px] aspect-[4/3] flex flex-col transition-all duration-500 border border-ink/[0.05]">
-                      <div className="h-8 bg-ink/[0.03] flex items-center px-3.5 gap-1 border-b border-ink/[0.02]">
+                      <div className="h-7 bg-ink/[0.03] flex items-center px-3 gap-1 border-b border-ink/[0.02]">
                         <div className="w-1.5 h-1.5 rounded-full bg-red-500/20 border border-red-500/30" />
                         <div className="w-1.5 h-1.5 rounded-full bg-amber-500/20 border border-amber-500/30" />
                         <div className="w-1.5 h-1.5 rounded-full bg-green-500/20 border border-green-500/30" />
                         <div className="ml-2 flex-1 h-3 bg-ink/5 rounded-full" />
                       </div>
-                      <div className="flex-1 p-5 md:p-6 flex flex-col justify-between relative bg-gradient-to-b from-transparent to-ink/[0.01]">
-                        <div className="space-y-2">
+                      <div className="flex-1 p-4 md:p-5 flex flex-col justify-between relative bg-gradient-to-b from-transparent to-ink/[0.01]">
+                        <div className="space-y-1.5">
                           <h3 className="text-[14px] md:text-[15px] font-bold text-ink tracking-tight">{project.title}</h3>
                           <p className="text-[12px] text-muted/50 leading-relaxed line-clamp-3">{project.description[0]}</p>
                         </div>

@@ -78,6 +78,19 @@ export const PROJECTS: Project[] = [
     tech: ["Python", "FastAPI", "SQLite", "React", "Docker"],
     link: "https://github.com/mithunreddyy/promptvault",
     demoUrl: "https://prompt-vault.onrender.com"
+  },
+  {
+    id: "portfolio",
+    title: "Portfolio",
+    description: [
+      "A premium, minimalist developer portfolio focused on high-end editorial aesthetics and production-grade CMS infrastructure.",
+      "Engineered a dual-source synchronization strategy using Supabase for real-time updates and local constants for offline resiliency.",
+      "Implemented an immersive 'Scattered Card' layout and high-fidelity terminal visuals using Motion (Framer Motion).",
+      "Integrated real-time location-aware data tracking and weather information using the Open-Meteo API."
+    ],
+    tech: ["React 19", "TypeScript", "Tailwind CSS v4", "Supabase", "Motion"],
+    link: "https://github.com/mithunreddyy/Portfolio",
+    demoUrl: "https://mithunr.vercel.app/"
   }
 ];
 

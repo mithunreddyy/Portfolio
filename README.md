@@ -1,76 +1,98 @@
-# Mithun Reddy | Portfolio
+# Mithun Reddy — Design-Minded Software Engineer
 
-A modern, dynamic, and responsive portfolio website built with a focus on high-end aesthetics, smooth interactions, and performance.
+A premium, minimalist developer portfolio focused on high-end editorial aesthetics, smooth interactions, and a production-grade CMS infrastructure. Built with a focus on typography, motion, and technical depth.
 
-## 🚀 Tech Stack
+![Portfolio Preview](public/preview-dark.png) 
+*(Note: Ensure you have a preview image or remove this line)*
 
-- **Framework**: [React](https://reactjs.org/) + [Vite](https://vitejs.dev/)
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-- **Animations**: [Motion](https://motion.dev/) (formerly Framer Motion)
-- **Database/Backend**: [Firebase Firestore](https://firebase.google.com/docs/firestore)
-- **Icons**: [Lucide React](https://lucide.dev/)
-- **Deployment**: Vercel / Netlify (Production Ready)
+## 🏛️ Architecture & Philosophy
 
-## ✨ Key Features
+This portfolio is designed with an **Editorial-First** approach, treating code documentation and projects as high-fidelity case studies. It balances the precision of engineering with the fluidity of design.
 
-- **Dynamic Hero Section**: Clean, typography-focused introduction with a verified status badge.
-- **Scattered Project Cards**: Interactive "scattered" card layout on desktop that transitions to a clean list view on mobile/tablet.
-- **Interactive Dock**: A premium, slim navigation dock with smooth hover tooltips and section tracking.
-- **Bento-style Sections**: Modern grid layouts for experience and technical toolkit.
-- **Content Management**: Integrated with Firebase for dynamic blog post updates.
-- **Theming**: Seamless Dark and Light mode support with local persistence.
-- **Responsive Design**: Fully optimized for Mobile, Tablet, and Desktop views.
-- **SEO Optimized**: Meta tags, structured data (JSON-LD), and semantic HTML for search visibility.
+- **Minimalist Aesthetic**: No borders, high-contrast typography, and significant whitespace for a clean reading experience.
+- **Interactive Depth**: Uses `Framer Motion` to create a tactile UI with scattered project cards, 3D-like hover effects, and immersive modals.
+- **Dynamic Infrastructure**: Powered by a dual-source strategy—Supabase for real-time content management and local constants for zero-latency fallbacks.
 
-## 🛠️ Development
+## 🚀 Technical Stack
+
+### Core
+- **Framework**: [React 19](https://react.dev/) + [Vite](https://vitejs.dev/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/) (Strictly typed)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **Animations**: [Motion](https://motion.dev/) (Framer Motion)
+
+### Backend & CMS
+- **Database**: [Supabase](https://supabase.com/) (PostgreSQL)
+- **CMS Logic**: Real-time synchronization for Blogs, Projects, and Experiences.
+- **Weather API**: [Open-Meteo](https://open-meteo.com/) for dynamic location-based temperature data.
+
+### Design System
+- **Typography**: 
+  - Sans: `Hanken Grotesk` (Editorial headings)
+  - UI: `Inter` (Functional text)
+  - Mono: `Geist Mono` / `JetBrains Mono` (Code & Metadata)
+- **Iconography**: [Lucide React](https://lucide.dev/) (Thin stroke variants)
+
+## ✨ Premium Features
+
+### 1. Immersive Project Case Studies
+The project section features a unique "Scattered Card" layout. Clicking a card triggers a high-fidelity modal that includes:
+- **Terminal Visuals**: A mock `runtime.sh` interface showcasing build steps.
+- **Infrastructure Cards**: Structured breakdown of core project architecture.
+- **Dynamic Shadows**: Theme-aware "ambient glows" that adapt to Light and Dark modes.
+
+### 2. Editorial Writing System
+A custom-built blog engine that supports:
+- **Rich Text Parsing**: Dynamic markdown-like parsing for bolding, bullet points, and high-impact quotes.
+- **Reading Progress**: Integrated read-time calculation and date formatting.
+- **Responsive Layouts**: Optimized for long-form reading on all screen sizes.
+
+### 3. Verification & Live Status
+- **Verified Badge**: A custom-animated verification seal next to the name.
+- **Live Availability**: Pulsing status indicators for current availability.
+- **Real-time Weather**: Integrated location-aware temperature and time tracking in the footer.
+
+## 🛠️ Installation & Setup
 
 ### Prerequisites
+- Node.js 18.x or higher
+- Supabase Account (for CMS)
 
-- Node.js (v18 or higher)
-- npm or yarn
+### Environment Variables
+Create a `.env` file in the root:
 
-### Getting Started
+```env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-1. **Clone the repository**:
-   ```bash
-   git clone <repository-url>
-   cd mithun_portfolio
-   ```
+### Commands
+```bash
+# Install dependencies
+npm install
 
-2. **Install dependencies**:
-   ```bash
-   npm install
-   ```
+# Start development server
+npm run dev
 
-3. **Set up Firebase**:
-   Create a `.env` file in the root directory and add your Firebase credentials:
-   ```env
-   VITE_FIREBASE_API_KEY=your_api_key
-   VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
-   VITE_FIREBASE_PROJECT_ID=your_project_id
-   VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
-   VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-   VITE_FIREBASE_APP_ID=your_app_id
-   ```
-
-4. **Run the development server**:
-   ```bash
-   npm run dev
-   ```
-
-5. **Build for production**:
-   ```bash
-   npm run build
-   ```
+# Build for production
+npm run build
+```
 
 ## 📂 Project Structure
 
-- `src/components`: UI components (Dock, Hero, Projects, Experience, Blog, etc.)
-- `src/constants.ts`: Central source of truth for portfolio content.
-- `src/lib/firebase.ts`: Firebase configuration and utilities.
-- `src/index.css`: Global styles and Tailwind configuration.
-- `public/`: Static assets and images.
+```text
+src/
+├── components/         # Premium UI Components
+│   ├── BlogPostView/   # Editorial reading interface
+│   ├── Projects/       # Scattered card & Modal logic
+│   ├── CMS/            # Admin management interface
+│   └── ...
+├── hooks/              # Custom logic (usePortfolioData, useTheme)
+├── lib/                # API Clients (Supabase, Weather)
+├── constants.ts        # Content source of truth
+└── index.css           # Global Design Tokens & Tailwind v4
+```
 
 ---
-Designed and Developed by **Mithun Reddy**
+
+Developed with ✻ by **Mithun Reddy**

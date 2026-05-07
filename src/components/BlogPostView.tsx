@@ -1,25 +1,68 @@
-import { ArrowLeft } from "lucide-react";
+import { Clock, CloudSun, CornerDownLeft, FileText, MapPin } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { BLOG_POSTS } from "../constants";
+import { BLOG_POSTS, PERSONAL_INFO } from "../constants";
 import { supabase } from "../lib/supabase";
 import { BlogPost } from "../types";
 import { SEO } from "./SEO";
 
+/* ─── Content parser ─── */
+
 type ContentBlock =
   | { type: "heading"; text: string }
-  | { type: "paragraph"; text: string }
-  | { type: "list"; style: "bullet" | "number"; items: string[] };
+  | { type: "paragraph"; segments: TextSegment[] }
+  | { type: "list"; style: "bullet" | "number"; items: ListItem[] };
+
+type TextSegment = { text: string; bold: boolean };
+
+interface ListItem {
+  segments: TextSegment[];
+  children?: ListItem[];
+}
+
+/** Parse **bold** markers inside a text string */
+const parseInline = (raw: string): TextSegment[] => {
+  const segments: TextSegment[] = [];
+  const regex = /\*\*(.+?)\*\*/g;
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = regex.exec(raw)) !== null) {
+    if (match.index > lastIndex) {
+      segments.push({ text: raw.slice(lastIndex, match.index), bold: false });
+    }
+    segments.push({ text: match[1], bold: true });
+    lastIndex = regex.lastIndex;
+  }
+
+  if (lastIndex < raw.length) {
+    segments.push({ text: raw.slice(lastIndex), bold: false });
+  }
+
+  return segments.length ? segments : [{ text: raw, bold: false }];
+};
 
 const parseContent = (content: string): ContentBlock[] => {
   const blocks: ContentBlock[] = [];
   let currentBlock: ContentBlock | null = null;
+  let pendingNumberedItem: ListItem | null = null;
 
   const flush = () => {
+    if (pendingNumberedItem && currentBlock?.type === "list" && currentBlock.style === "number") {
+      currentBlock.items.push(pendingNumberedItem);
+      pendingNumberedItem = null;
+    }
     if (currentBlock) {
       blocks.push(currentBlock);
       currentBlock = null;
+    }
+  };
+
+  const flushPending = () => {
+    if (pendingNumberedItem && currentBlock?.type === "list" && currentBlock.style === "number") {
+      currentBlock.items.push(pendingNumberedItem);
+      pendingNumberedItem = null;
     }
   };
 
@@ -29,13 +72,18 @@ const parseContent = (content: string): ContentBlock[] => {
     const line = rawLine.trim();
 
     if (!line) {
-      flush();
+      // Don't flush numbered list blocks on empty lines — they may have sub-bullets
+      if (currentBlock?.type !== "list" || currentBlock.style !== "number") {
+        flush();
+      } else {
+        flushPending();
+      }
       continue;
     }
 
     const headingMatch = line.match(/^(.+?):$/);
     const bulletMatch = line.match(/^[•*-]\s+(.*)$/);
-    const orderedMatch = line.match(/^\d+\.\s+(.*)$/);
+    const orderedMatch = line.match(/^(\d+)\.\s+(.*)$/);
 
     if (headingMatch && line.endsWith(":")) {
       flush();
@@ -44,47 +92,111 @@ const parseContent = (content: string): ContentBlock[] => {
       continue;
     }
 
+    if (orderedMatch) {
+      if (currentBlock?.type !== "list" || currentBlock.style !== "number") {
+        flush();
+        currentBlock = { type: "list", style: "number", items: [] };
+      } else {
+        flushPending();
+      }
+      pendingNumberedItem = { segments: parseInline(orderedMatch[2]), children: [] };
+      continue;
+    }
+
     if (bulletMatch) {
+      // Sub-bullet of a numbered list item
+      if (pendingNumberedItem) {
+        if (!pendingNumberedItem.children) pendingNumberedItem.children = [];
+        pendingNumberedItem.children.push({ segments: parseInline(bulletMatch[1]) });
+        continue;
+      }
+
+      // Standalone bullet list
       if (currentBlock?.type === "list" && currentBlock.style === "bullet") {
-        currentBlock.items.push(bulletMatch[1]);
+        currentBlock.items.push({ segments: parseInline(bulletMatch[1]) });
       } else {
         flush();
         currentBlock = {
           type: "list",
           style: "bullet",
-          items: [bulletMatch[1]],
+          items: [{ segments: parseInline(bulletMatch[1]) }],
         };
       }
       continue;
     }
 
-    if (orderedMatch) {
-      const lineText = orderedMatch[1];
-      if (currentBlock?.type === "list" && currentBlock.style === "number") {
-        currentBlock.items.push(lineText);
-      } else {
-        flush();
-        currentBlock = { type: "list", style: "number", items: [lineText] };
-      }
-      continue;
-    }
-
+    // Regular paragraph text
     if (currentBlock?.type === "paragraph") {
-      currentBlock.text += ` ${line}`;
+      const existing = currentBlock.segments.map(s => s.text).join("");
+      currentBlock.segments = parseInline(existing + " " + line);
     } else {
       flush();
-      currentBlock = { type: "paragraph", text: line };
+      currentBlock = { type: "paragraph", segments: parseInline(line) };
     }
   }
 
+  flushPending();
   flush();
   return blocks;
 };
+
+/* ─── Inline text renderer ─── */
+
+function RichText({ segments }: { segments: TextSegment[] }) {
+  return (
+    <>
+      {segments.map((seg, i) =>
+        seg.bold ? (
+          <strong key={i} className="font-semibold text-ink">
+            {seg.text}
+          </strong>
+        ) : (
+          <span key={i}>{seg.text}</span>
+        ),
+      )}
+    </>
+  );
+}
+
+/** Convert "FEB 21, 2025" or ISO date to DD/MM/YY */
+const toShortDate = (dateStr: string): string => {
+  try {
+    const months: Record<string, string> = {
+      JAN: "01", FEB: "02", MAR: "03", APR: "04", MAY: "05", JUN: "06",
+      JUL: "07", AUG: "08", SEP: "09", OCT: "10", NOV: "11", DEC: "12",
+    };
+    const parts = dateStr.trim().split(/[\s,]+/);
+    if (parts.length >= 3 && months[parts[0].toUpperCase()]) {
+      const mm = months[parts[0].toUpperCase()];
+      const dd = parts[1].padStart(2, "0");
+      const yy = parts[2].slice(-2);
+      return `${dd}/${mm}/${yy}`;
+    }
+    const d = new Date(dateStr);
+    if (!isNaN(d.getTime())) {
+      const dd = String(d.getDate()).padStart(2, "0");
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const yy = String(d.getFullYear()).slice(-2);
+      return `${dd}/${mm}/${yy}`;
+    }
+  } catch { /* noop */ }
+  return dateStr;
+};
+
+/** Extract minutes from readTime string */
+const extractMinutes = (readTime: string): number => {
+  const n = parseInt((readTime || "").replace(/[^0-9]/g, ""), 10);
+  return isNaN(n) ? 2 : n;
+};
+
+/* ─── Main component ─── */
 
 export function BlogPostView() {
   const { slug } = useParams();
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
+  const [allBlogs, setAllBlogs] = useState<BlogPost[]>(BLOG_POSTS);
+  const [weather, setWeather] = useState<{ temp: number } | null>(null);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -117,27 +229,63 @@ export function BlogPostView() {
     fetchPost();
   }, [slug]);
 
+  /* Fetch all blogs for "More" section */
+  useEffect(() => {
+    const fetchAllBlogs = async () => {
+      try {
+        const { data } = await supabase
+          .from("blogs")
+          .select("*")
+          .eq("published", true)
+          .order("date", { ascending: false });
+        if (data && data.length > 0) {
+          const combined = [
+            ...data,
+            ...BLOG_POSTS.filter(b => !data.some((db: BlogPost) => db.slug === b.slug)),
+          ] as BlogPost[];
+          setAllBlogs(combined);
+        }
+      } catch { /* use fallback */ }
+    };
+    fetchAllBlogs();
+  }, []);
+
+  /* Fetch weather for Hyderabad */
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        const res = await fetch(
+          "https://api.open-meteo.com/v1/forecast?latitude=17.385&longitude=78.4867&current_weather=true"
+        );
+        const json = await res.json();
+        if (json.current_weather) {
+          setWeather({ temp: Math.round(json.current_weather.temperature) });
+        }
+      } catch { /* silent fail */ }
+    };
+    fetchWeather();
+  }, []);
+
+  /* ─── Loading state ─── */
   if (loading) {
     return (
-      <div className="min-h-screen bg-bg flex items-center justify-center">
+      <div className="blogpost-root blogpost-center">
         <motion.div
-          animate={{ opacity: [0.3, 1, 0.3], scale: [0.9, 1.1, 0.9] }}
-          transition={{ repeat: Infinity, duration: 1.5 }}
-          className="w-10 h-10 bg-accent/20 rounded-full blur-xl"
+          animate={{ opacity: [0.3, 1, 0.3], scale: [0.97, 1.03, 0.97] }}
+          transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}
+          className="blogpost-loader"
         />
       </div>
     );
   }
 
+  /* ─── 404 state ─── */
   if (!post) {
     return (
-      <div className="min-h-screen bg-bg flex items-center justify-center px-5">
-        <div className="text-center">
-          <h1 className="text-xl font-bold text-ink mb-4">Post not found</h1>
-          <Link
-            to="/"
-            className="text-accent hover:underline text-[12px] font-semibold py-2 inline-block"
-          >
+      <div className="blogpost-root blogpost-center">
+        <div style={{ textAlign: "center" }}>
+          <h1 className="blogpost-404-title">Post not found</h1>
+          <Link to="/" className="blogpost-404-link">
             Back to home
           </Link>
         </div>
@@ -146,15 +294,17 @@ export function BlogPostView() {
   }
 
   const contentBlocks = post.content ? parseContent(post.content) : [];
-  const wordCount = post.content
-    ? post.content.split(/\s+/).filter(Boolean).length
-    : 0;
+  const allText = [post.excerpt, post.content].filter(Boolean).join(" ");
+  const wordCount = allText.split(/\s+/).filter(Boolean).length;
+  const readMinutes = parseInt((post.readTime || "").replace(/[^0-9]/g, ""), 10) || Math.ceil(wordCount / 200);
+  const excerptSegments = parseInline(post.excerpt || "");
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen bg-bg text-ink py-10 px-5 sm:py-14 sm:px-6 md:py-16"
+      transition={{ duration: 0.5 }}
+      className="blogpost-root"
     >
       <SEO
         title={post.title}
@@ -174,106 +324,177 @@ export function BlogPostView() {
         }}
       />
 
-      <div className="max-w-[740px] mx-auto">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-2 text-[12px] font-medium text-muted/40 hover:text-ink hover:border-white/15 transition-colors"
-        >
-          <ArrowLeft size={14} className="shrink-0" /> Back
+      <div className="blogpost-container">
+        {/* ─── Back button ─── */}
+        <Link to="/" className="blogpost-back" id="blog-back-button">
+          <CornerDownLeft size={14} strokeWidth={1.5} />
+          <span>BACK</span>
         </Link>
 
-        <header className="mt-8 mb-10">
-          <div className="flex flex-wrap items-center gap-3 text-[11px] sm:text-[12px] uppercase tracking-[0.26em] font-medium text-muted/50 mb-5">
-            <span className="inline-flex items-center rounded-full border border-muted/15 px-3 py-1 text-muted/60">
-              {post.category}
+        {/* ─── Meta row ─── */}
+        <div className="blogpost-meta-row">
+          <span className="blogpost-meta-date">{post.date}</span>
+          <div className="blogpost-meta-stats">
+            <span className="blogpost-meta-stat">
+              <Clock size={13} strokeWidth={1.5} />
+              {readMinutes} m
             </span>
-            <span>{post.date}</span>
-            <span>{(post.readTime || "").replace(/[^0-9]/g, "")} min read</span>
-            <span>{wordCount} words</span>
+            <span className="blogpost-meta-stat">
+              <FileText size={13} strokeWidth={1.5} />
+              {wordCount} words
+            </span>
           </div>
+        </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-[1.05] text-ink mb-4">
-            {post.title}
-          </h1>
-          <p className="max-w-[680px] text-[17px] sm:text-[18px] text-muted/50 leading-[1.8]">
-            {post.excerpt}
-          </p>
-        </header>
+        {/* ─── Title ─── */}
+        <motion.h1
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="blogpost-title"
+        >
+          {post.title.split("\n").map((line, i) => (
+            <span key={i}>
+              {i > 0 && <br />}
+              {line}
+            </span>
+          ))}
+        </motion.h1>
 
-        <article className="rounded-[32px] border border-white/10 bg-ink/5 p-6 sm:p-8 md:p-10 shadow-[0_40px_120px_-80px_rgba(15,23,42,0.55)]">
-          <div className="space-y-8 text-[16px] sm:text-[18px] leading-[1.85] text-muted/70 font-normal">
-            {contentBlocks.length ? (
-              contentBlocks.map((block, index) => {
-                if (block.type === "heading") {
-                  return (
-                    <h2
-                      key={index}
-                      className="text-lg sm:text-xl font-semibold text-ink leading-[1.3]"
-                    >
-                      {block.text}
-                    </h2>
-                  );
-                }
+        {/* ─── Intro paragraph (excerpt as lead) ─── */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="blogpost-lead"
+        >
+          <RichText segments={excerptSegments} />
+        </motion.div>
 
-                if (block.type === "paragraph") {
-                  return (
-                    <p
-                      key={index}
-                      className="text-[17px] sm:text-[18px] leading-[1.95] text-muted/80"
-                    >
-                      {block.text}
-                    </p>
-                  );
-                }
-
+        {/* ─── Article content ─── */}
+        <motion.article
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="blogpost-article"
+        >
+          {contentBlocks.length ? (
+            contentBlocks.map((block, index) => {
+              if (block.type === "heading") {
                 return (
-                  <div key={index}>
-                    {block.style === "number" ? (
-                      <ol className="space-y-4 list-decimal list-inside text-muted/70">
-                        {block.items.map((item, itemIndex) => (
-                          <li key={itemIndex} className="pl-2 text-ink">
-                            {item}
-                          </li>
-                        ))}
-                      </ol>
-                    ) : (
-                      <ul className="space-y-3 list-none">
-                        {block.items.map((item, itemIndex) => (
-                          <li key={itemIndex} className="flex gap-3">
-                            <span className="mt-1 text-accent">•</span>
-                            <span className="text-ink/90">{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
+                  <h2 key={index} className="blogpost-h2">
+                    {block.text}:
+                  </h2>
                 );
-              })
-            ) : (
-              <p className="text-[17px] text-muted/70">
-                No content available for this post.
-              </p>
-            )}
-          </div>
-        </article>
+              }
 
-        <footer className="mt-12 pt-6 border-t border-white/10">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-full bg-ink/[0.08] shrink-0" />
-              <div>
-                <p className="text-[14px] font-semibold text-ink">
-                  Mithun Reddy
-                </p>
-                <p className="text-[11px] text-muted/45 uppercase tracking-[0.18em]">
-                  Software Engineer
-                </p>
-              </div>
-            </div>
-            <p className="text-sm text-muted/50 max-w-[420px] leading-[1.7]">
-              Building modern digital experiences that bridge product design and
-              engineering with thoughtful UI and robust performance.
+              if (block.type === "paragraph") {
+                return (
+                  <p key={index} className="blogpost-paragraph">
+                    <RichText segments={block.segments} />
+                  </p>
+                );
+              }
+
+              /* ─── Lists ─── */
+              if (block.style === "number") {
+                return (
+                  <ol key={index} className="blogpost-ol">
+                    {block.items.map((item, i) => (
+                      <li key={i} className="blogpost-ol-item">
+                        <span className="blogpost-ol-number">{i + 1}.</span>
+                        <div>
+                          <span className="blogpost-ol-label">
+                            <RichText segments={item.segments} />
+                          </span>
+                          {item.children && item.children.length > 0 && (
+                            <ul className="blogpost-sub-ul">
+                              {item.children.map((child, ci) => (
+                                <li key={ci} className="blogpost-sub-li">
+                                  <span className="blogpost-bullet">•</span>
+                                  <span>
+                                    <RichText segments={child.segments} />
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
+                );
+              }
+
+              return (
+                <ul key={index} className="blogpost-ul">
+                  {block.items.map((item, i) => (
+                    <li key={i} className="blogpost-li">
+                      <span className="blogpost-bullet">•</span>
+                      <span>
+                        <RichText segments={item.segments} />
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              );
+            })
+          ) : (
+            <p className="blogpost-paragraph" style={{ opacity: 0.5 }}>
+              No content available for this post.
             </p>
+          )}
+        </motion.article>
+
+        {/* ─── More posts ─── */}
+        {(() => {
+          const otherPosts = allBlogs.filter(b => b.slug !== slug);
+          if (otherPosts.length === 0) return null;
+          return (
+            <motion.section
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="blogpost-more"
+            >
+              <span className="blogpost-more-label">MORE</span>
+              <div className="blogpost-more-list">
+                {otherPosts.map((b) => (
+                  <Link
+                    key={b.slug}
+                    to={`/blog/${b.slug}`}
+                    className="blogpost-more-row"
+                  >
+                    <span className="blogpost-more-date">
+                      {toShortDate(b.date)}
+                    </span>
+                    <span className="blogpost-more-title">
+                      {b.title.replace(/\n/g, " ")}
+                    </span>
+                    <span className="blogpost-more-time">
+                      <Clock size={12} strokeWidth={1.5} />
+                      {extractMinutes(b.readTime)} m
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </motion.section>
+          );
+        })()}
+
+        {/* ─── Footer ─── */}
+        <footer className="blogpost-footer">
+          <div className="blogpost-footer-meta">
+            <span className="blogpost-footer-location">
+              <MapPin size={13} strokeWidth={1.5} />
+              {PERSONAL_INFO.location.toUpperCase()}
+            </span>
+            {weather && (
+              <span className="blogpost-footer-weather">
+                <CloudSun size={14} strokeWidth={1.5} />
+                {weather.temp}°C
+              </span>
+            )}
           </div>
         </footer>
       </div>

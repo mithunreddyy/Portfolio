@@ -104,12 +104,12 @@ export const BLOG_POSTS: BlogPost[] = [
   {
     id: "design-engineer-mindset",
     slug: "design-engineer-mindset",
-    title: "How to think like both a designer & engineer",
+    title: "How to think like both\na designer & engineer",
     date: "FEB 21, 2025",
-    excerpt: "Design and engineering are often seen as separate disciplines, but the best digital products come from a deep understanding of both worlds.",
-    content: "Thinking like a designer and an engineer allows for better decision-making, smoother collaboration, and faster execution.\n\nThe Challenges of Bridging the Gap:\n\n• Designers focus on usability, aesthetics, and user experience.\n• Engineers focus on performance, scalability, and feasibility.\n• The conflict? Designs that look amazing on Figma might be impractical to build, and engineers might overlook UX nuances that designers care about.\n\nHow to Think Like Both:\n\n1. Learn the Basics of Both Disciplines:\n\n• If you're a designer, learn HTML, CSS, and JavaScript fundamentals.\n• If you're an engineer, dive into design principles, typography, and color theory.\n\n2. Prioritize Feasibility Early On:\n\n• When designing, consider how components will translate into reusable UI elements.\n• When coding, respect the design intent and avoid unnecessary compromises.",
+    excerpt: "Design and engineering are often seen as separate disciplines, but the best digital products come from a deep **understanding of both worlds**. Thinking like a designer **and** an engineer allows for better decision-making, smoother collaboration, and faster execution.",
+    content: "The Challenges of Bridging the Gap:\n\n• Designers focus on **usability, aesthetics, and user experience**.\n• Engineers focus on **performance, scalability, and feasibility**.\n• The conflict? Designs that look amazing on Figma might be **impractical to build**, and engineers might overlook **UX nuances** that designers care about.\n\nHow to Think Like Both:\n\n1. Learn the Basics of Both Disciplines:\n\n• If you're a designer, learn HTML, CSS, and JavaScript fundamentals.\n• If you're an engineer, dive into design principles, typography, and color theory.\n\n2. Prioritize Feasibility Early On:\n\n• When designing, consider how components will translate into reusable UI elements.\n• When coding, respect the design intent and avoid unnecessary compromises.",
     category: "Product Design",
-    readTime: "4 min read"
+    readTime: "2 min read"
   },
   {
     id: "distributed-caching",

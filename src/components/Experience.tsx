@@ -1,6 +1,5 @@
 import { motion } from 'motion/react';
 import { SKILL_GROUPS } from '../constants';
-import { usePortfolioData } from '../hooks/usePortfolioData';
 
 const skillIconMap: Record<string, string> = {
   "TypeScript": "https://cdn.simpleicons.org/typescript/3178C6",
@@ -33,15 +32,15 @@ import { Experience } from '../types';
 
 export function ExperienceSection({ experiences }: { experiences: Experience[] }) {
   return (
-    <section id="experience" className="section-container pt-6 sm:pt-8 pb-6 sm:pb-8">
-      <div className="mb-4 sm:mb-5">
+    <section id="experience" className="section-container pt-3 sm:pt-4 pb-4 sm:pb-6">
+      <div className="mb-2.5 sm:mb-3">
         <h2 className="text-[15px] sm:text-[17px] font-semibold text-ink">Experience</h2>
         <p className="text-[16px] sm:text-[18px] leading-[1.75] text-muted/70 font-medium max-w-xl">
           Throughout my career, I've worked on various projects, from building scalable systems to designing user-friendly interfaces.
         </p>
       </div>
 
-      <div className="space-y-6 sm:space-y-8">
+      <div className="space-y-4 sm:space-y-6">
         {experiences.map((exp, index) => (
           <motion.div
             key={exp.id}
@@ -52,17 +51,17 @@ export function ExperienceSection({ experiences }: { experiences: Experience[] }
             className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-6"
           >
             <div className="md:col-span-3">
-              <span className="text-[12px] sm:text-[14px] text-muted/40 font-bold uppercase tracking-widest font-mono block mt-1">{exp.period}</span>
+              <span className="text-[12px] sm:text-[14px] text-muted/60 font-bold uppercase tracking-tight font-mono block mt-1">{exp.period}</span>
             </div>
             <div className="md:col-span-9 space-y-3">
               <div className="flex flex-wrap items-baseline gap-1.5">
                 <h3 className="text-[16px] sm:text-[18px] font-semibold text-ink">{exp.role}</h3>
-                <span className="text-[16px] sm:text-[18px] text-muted/40 font-medium">at</span>
+                <span className="text-[16px] sm:text-[18px] text-muted/60 font-medium">at</span>
                 <span className="text-[16px] sm:text-[18px] text-ink font-semibold">{exp.company}</span>
               </div>
               <ul className="space-y-2.5 pl-0">
                 {exp.highlights.map((h, i) => (
-                  <li key={i} className="text-[16px] sm:text-[18px] text-muted/60 leading-[1.75] font-medium flex gap-3">
+                  <li key={i} className="text-[15px] sm:text-[17px] text-muted/70 leading-[1.75] font-medium flex gap-2">
                     <span className="text-muted/20 mt-0.5 shrink-0">·</span>
                     <span>{h}</span>
                   </li>
@@ -79,10 +78,10 @@ export function ExperienceSection({ experiences }: { experiences: Experience[] }
 /* ─── Stack — Flat colored icons, as-is ─── */
 export function Skills() {
   return (
-    <section id="skills" className="section-container pt-6 sm:pt-8 pb-6 sm:pb-8">
-      <h2 className="text-[15px] sm:text-[17px] font-semibold text-ink text-left mb-4 sm:mb-5">Stack</h2>
+    <section id="skills" className="section-container pt-3 sm:pt-4 pb-4 sm:pb-6">
+      <h2 className="text-[15px] sm:text-[17px] font-semibold text-ink text-left mb-3 sm:mb-3.5">Stack</h2>
 
-      <div className="flex flex-wrap justify-center gap-4 sm:gap-5">
+      <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
         {allSkills.map((skill, i) => (
           <motion.div
             key={skill}

@@ -1,10 +1,10 @@
 import { ArrowUpRight, Github, Linkedin, Mail, MapPin } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { FormEvent, useState } from "react";
-import { usePortfolioData } from "../hooks/usePortfolioData";
+import { PERSONAL_INFO } from "../constants";
 
 export function Footer() {
-  const { personalInfo } = usePortfolioData();
+  const personalInfo = PERSONAL_INFO;
   const currentYear = new Date().getFullYear();
   const [formState, setFormState] = useState({
     name: "",
@@ -70,16 +70,16 @@ export function Footer() {
   return (
     <footer
       id="contact"
-      className="section-container pt-6 sm:pt-8 pb-24 sm:pb-20 bg-bg text-muted"
+      className="section-container pt-3 sm:pt-4 pb-20 sm:pb-16 bg-bg text-muted"
     >
       <h2 className="text-[15px] sm:text-[17px] font-semibold text-ink mb-2">
         Contact
       </h2>
-      <p className="text-[16px] sm:text-[18px] leading-[1.75] text-muted/70 font-medium mb-5 sm:mb-6 max-w-xl">
+      <p className="text-[16px] sm:text-[18px] leading-[1.75] text-muted/70 font-medium mb-3 sm:mb-4 max-w-xl">
         You can contact me using the form or via the links below.
       </p>
 
-      <form className="space-y-3 mb-8 sm:mb-10" onSubmit={handleSubmit}>
+      <form className="space-y-2.5 mb-5 sm:mb-6" onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <input
             type="text"
@@ -136,7 +136,7 @@ export function Footer() {
         <div className="flex items-center justify-between pt-1">
           <button
             type="submit"
-            className="h-10 px-6 bg-ink text-bg hover:scale-[1.02] active:scale-[0.98] rounded-full text-[12px] sm:text-[13px] font-bold transition-all flex items-center gap-2"
+            className="h-10 px-6 bg-ink text-bg hover:scale-[1.02] active:scale-[0.98] rounded-lg text-[13px] sm:text-[14px] font-medium transition-all flex items-center gap-2"
           >
             Send message
           </button>
@@ -151,28 +151,28 @@ export function Footer() {
       </form>
 
       {/* Social Links */}
-      <div className="mb-8 sm:mb-10">
+      <div className="mb-5 sm:mb-6">
         {socials.map((social) => (
           <a
             key={social.label}
             href={social.href}
-            className="flex items-center justify-between py-3.5 sm:py-4 group transition-all active:bg-ink/[0.02] -mx-2 px-2 rounded-lg"
+            className="flex items-center justify-between py-2.5 sm:py-3 group transition-all active:bg-ink/[0.02] -mx-2 px-2 rounded-lg"
           >
             <div className="flex items-center gap-3">
-              <span className="text-muted/25 group-hover:text-ink transition-colors">
+              <span className="text-muted/65 group-hover:text-ink transition-colors">
                 {social.icon}
               </span>
-              <span className="text-[16px] sm:text-[18px] font-medium text-muted/50 group-hover:text-ink transition-colors">
+              <span className="text-[16px] sm:text-[18px] font-medium text-muted/70 group-hover:text-ink transition-colors">
                 {social.label}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-[13px] sm:text-[14px] text-muted/35 font-medium group-hover:text-ink transition-colors tracking-tight truncate max-w-[180px] sm:max-w-none">
+              <span className="text-[15px] sm:text-[15px] text-muted/65 font-medium group-hover:text-ink transition-colors tracking-tight truncate max-w-[180px] sm:max-w-none">
                 {social.value}
               </span>
               <ArrowUpRight
                 size={14}
-                className="text-muted/20 group-hover:text-ink transition-all shrink-0"
+                className="text-muted/60 group-hover:text-ink transition-all shrink-0"
               />
             </div>
           </a>
@@ -180,9 +180,9 @@ export function Footer() {
       </div>
 
       {/* Footer meta */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2.5 text-[10px] sm:text-[11px] font-medium text-muted/25">
-        <div className="flex items-center gap-2">
-          <MapPin size={11} className="opacity-40" />
+      <div className="flex flex-row sm:flex-row justify-between items-start sm:items-center gap-2.5 text-[14px] sm:text-[16px] font-medium text-muted/65">
+        <div className="flex items-center gap-1">
+          <MapPin size={16} className="opacity-85" />
           <span>Hyderabad, India</span>
         </div>
         <span>© {currentYear} Mithun Reddy</span>

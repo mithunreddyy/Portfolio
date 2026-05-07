@@ -1,7 +1,6 @@
 import { Copy, CopyCheck, Eye, FileDown } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
-import { usePortfolioData } from '../hooks/usePortfolioData';
 
 import { PersonalInfo } from '../types';
 
@@ -48,12 +47,12 @@ export function Hero({ personalInfo }: { personalInfo: PersonalInfo }) {
   }, [personalInfo.email, personalInfo.resumeUrl]);
 
   return (
-    <section id="hero" className="section-container pt-6 sm:pt-8 pb-8 sm:pb-10">
+    <section id="hero" className="section-container pt-4 sm:pt-6 pb-4 sm:pb-6">
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
-        className="space-y-5 sm:space-y-6"
+        className="space-y-3.5 sm:space-y-4"
       >
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
@@ -68,7 +67,7 @@ export function Hero({ personalInfo }: { personalInfo: PersonalInfo }) {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
               </div>
-              <span className="text-[10px] sm:text-[11px] font-medium text-accent uppercase tracking-wider">Available for work</span>
+              <span className="text-[10px] sm:text-[11px] font-mono text-accent uppercase tracking-tight">Available for work</span>
             </div>
           </div>
 
@@ -93,7 +92,7 @@ export function Hero({ personalInfo }: { personalInfo: PersonalInfo }) {
         </div>
 
         {/* CTAs */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-10 pt-2">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-10 pt-1">
           {/* Copy Email CTA */}
           <div className="relative">
             <button
@@ -107,9 +106,9 @@ export function Hero({ personalInfo }: { personalInfo: PersonalInfo }) {
 
             <button
               onClick={copyEmail}
-              className="flex sm:hidden items-center gap-2 text-[13px] font-medium text-muted/50 active:text-ink transition-colors py-1"
+              className="flex sm:hidden items-center gap-1 text-[13px] font-medium text-muted/70 active:text-ink transition-colors py-1"
             >
-              <Copy size={13} className="text-muted/40" />
+              <Copy size={13} className="text-muted/60" />
               <span>Tap to copy email</span>
             </button>
 
@@ -119,10 +118,10 @@ export function Hero({ personalInfo }: { personalInfo: PersonalInfo }) {
                   initial={{ opacity: 0, y: 5 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -5 }}
-                  className="absolute left-0 -bottom-6 flex items-center gap-2 text-accent"
+                  className="absolute left-0 -bottom-3 flex items-center gap-1 text-accent"
                 >
                   <CopyCheck size={10} />
-                  <span className="text-[9px] font-bold uppercase tracking-[0.2em]">Email copied!</span>
+                  <span className="text-[9px] font-medium uppercase tracking-[0.2em]">Email copied!</span>
                 </motion.div>
               )}
             </AnimatePresence>

@@ -1,7 +1,6 @@
-import { ExternalLink, X } from 'lucide-react';
+import { ArrowUpRight, ExternalLink, Github, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { useState, useEffect, useCallback } from 'react';
-import { usePortfolioData } from '../hooks/usePortfolioData';
+import { useCallback, useEffect, useState } from 'react';
 import { Project } from '../types';
 
 export function Projects({ projects }: { projects: Project[] }) {
@@ -37,7 +36,7 @@ export function Projects({ projects }: { projects: Project[] }) {
   ];
 
   return (
-    <section id="projects" className="section-container pt-4 sm:pt-6 pb-6 sm:pb-10 relative overflow-visible">
+    <section id="projects" className="section-container pt-3 sm:pt-4 pb-4 sm:pb-6 relative overflow-visible">
       <div className="relative z-10">
         <div className="mb-3 sm:mb-4">
           <h2 className="text-[15px] sm:text-[17px] font-semibold text-ink mb-2 sm:mb-3">Work</h2>
@@ -47,7 +46,7 @@ export function Projects({ projects }: { projects: Project[] }) {
         </div>
 
         {isMobile ? (
-          <div className="space-y-3 mt-4 pb-4">
+          <div className="space-y-2.5 mt-3 pb-2">
             {projects.map((project, index) => (
               <motion.div
                 key={project.id}
@@ -58,11 +57,11 @@ export function Projects({ projects }: { projects: Project[] }) {
                 onClick={() => setSelectedProject(project)}
                 className="cursor-pointer group active:scale-[0.98] transition-transform"
               >
-                <div className="bg-bg rounded-xl shadow-lg overflow-hidden border border-ink/[0.06]">
+                <div className="bg-bg rounded-xl shadow-xl overflow-hidden border border-ink/[0.06]">
                   <div className="h-7 bg-ink/[0.03] flex items-center px-3 gap-1">
-                    <div className="w-1.5 h-1.5 rounded-full bg-ink/10" />
-                    <div className="w-1.5 h-1.5 rounded-full bg-ink/10" />
-                    <div className="w-1.5 h-1.5 rounded-full bg-ink/10" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-red-500/20 border border-red-500/30" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500/20 border border-amber-500/30" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-green-500/20 border border-green-500/30" />
                     <div className="ml-2 flex-1 h-3 bg-ink/5 rounded-full" />
                   </div>
                   <div className="p-4 flex flex-col gap-3">
@@ -86,7 +85,7 @@ export function Projects({ projects }: { projects: Project[] }) {
             ))}
           </div>
         ) : (
-          <div className="relative h-[380px] lg:h-[400px] flex items-center justify-center overflow-visible mt-8 sm:mt-12">
+          <div className="relative h-[340px] lg:h-[370px] flex items-center justify-center overflow-visible mt-4 sm:mt-6">
             <div className="relative w-full h-full flex items-center justify-center">
               {projects.map((project, index) => {
                 const style = cardStyles[index % cardStyles.length];
@@ -113,11 +112,11 @@ export function Projects({ projects }: { projects: Project[] }) {
                     className="absolute cursor-pointer group"
                     style={{ zIndex: style.zIndex }}
                   >
-                    <div className="bg-bg rounded-2xl shadow-2xl overflow-hidden w-[280px] md:w-[300px] lg:w-[320px] aspect-[4/3] flex flex-col transition-all duration-500 border border-ink/[0.04]">
+                    <div className="bg-bg rounded-2xl shadow-[0_30px_80px_-15px_rgba(0,0,0,0.7)] group-hover:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.9)] overflow-hidden w-[280px] md:w-[300px] lg:w-[320px] aspect-[4/3] flex flex-col transition-all duration-500 border border-ink/[0.05]">
                       <div className="h-8 bg-ink/[0.03] flex items-center px-3.5 gap-1 border-b border-ink/[0.02]">
-                        <div className="w-1.5 h-1.5 rounded-full bg-ink/10" />
-                        <div className="w-1.5 h-1.5 rounded-full bg-ink/10" />
-                        <div className="w-1.5 h-1.5 rounded-full bg-ink/10" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-red-500/20 border border-red-500/30" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-amber-500/20 border border-amber-500/30" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-green-500/20 border border-green-500/30" />
                         <div className="ml-2 flex-1 h-3 bg-ink/5 rounded-full" />
                       </div>
                       <div className="flex-1 p-5 md:p-6 flex flex-col justify-between relative bg-gradient-to-b from-transparent to-ink/[0.01]">
@@ -147,60 +146,213 @@ export function Projects({ projects }: { projects: Project[] }) {
 
       <AnimatePresence>
         {selectedProject && (
-          <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-6 md:p-16">
+          <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 md:p-8 lg:p-12 overflow-hidden">
             <motion.div
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               onClick={() => setSelectedProject(null)}
-              className="absolute inset-0 bg-ink/60 backdrop-blur-md"
+              className="absolute inset-0 bg-bg/80 backdrop-blur-2xl"
             />
+            
             <motion.div
               layoutId={selectedProject.id}
-              initial={{ opacity: 0, scale: 0.95, y: isMobile ? 80 : 20 }}
+              initial={{ opacity: 0, scale: 0.9, y: isMobile ? 100 : 0 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: isMobile ? 80 : 20 }}
-              className="bg-bg w-full sm:max-w-3xl max-h-[92dvh] sm:max-h-[85vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl shadow-2xl relative z-10 p-5 sm:p-8 md:p-12 scrollbar-hide"
+              exit={{ opacity: 0, scale: 0.9, y: isMobile ? 100 : 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="bg-bg w-full max-w-4xl max-h-[96dvh] sm:max-h-[85vh] overflow-hidden rounded-t-[24px] sm:rounded-[24px] border border-ink/10 shadow-[0_0_100px_rgba(0,0,0,0.5)] relative z-10 flex flex-col"
             >
-              <div className="w-8 h-0.5 bg-ink/10 rounded-full mx-auto mb-4 sm:hidden" />
-              <button onClick={() => setSelectedProject(null)} className="absolute top-3 right-3 sm:top-5 sm:right-5 p-2 bg-bg hover:bg-ink hover:text-bg rounded-full transition-all group shadow-lg z-20">
-                <X size={16} className="group-hover:rotate-90 transition-transform duration-300" />
-              </button>
-              <div className="flex flex-col gap-5 sm:gap-8 pb-16 sm:pb-4">
-                <div className="pr-8">
-                  <span className="text-[10px] font-bold text-accent tracking-[0.3em] mb-1.5 block">Project case</span>
-                  <h3 className="text-xl sm:text-2xl md:text-[28px] font-bold text-ink tracking-tight">{selectedProject.title}</h3>
+              {/* Decorative Background Glow */}
+              <div className="absolute top-0 left-1/4 w-1/2 h-1/2 bg-accent/5 blur-[120px] pointer-events-none" />
+
+              {/* Header / Top Bar */}
+              <div className="flex items-center justify-between px-6 py-3.5 sm:px-8 sm:py-4 border-b border-ink/5 shrink-0 bg-bg/50 backdrop-blur-sm z-20">
+                <div className="flex items-center gap-3">
+                  <div className="flex gap-1.5 px-1">
+                    <div className="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/30" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-amber-500/20 border border-amber-500/30" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/30" />
+                  </div>
+                  <span className="text-[10px] font-mono text-muted/40 uppercase tracking-[0.2em] ml-2">Project Case /{selectedProject.id}</span>
                 </div>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-8">
-                  <div className="lg:col-span-2 space-y-6">
-                    <p className="text-[16px] sm:text-[18px] text-ink leading-[1.75] font-medium">{selectedProject.description[0]}</p>
-                    <div className="space-y-3">
-                      <span className="text-[12px] sm:text-[13px] text-muted/40 font-semibold block">Key achievements</span>
-                      <ul className="space-y-2.5">
-                        {selectedProject.description.slice(1).map((line, i) => (
-                          <li key={i} className="flex gap-3 text-[16px] sm:text-[18px] text-muted/70 leading-[1.75] font-normal">
-                            <span className="text-accent mt-0.5 shrink-0">•</span>
-                            <span>{line}</span>
-                          </li>
-                        ))}
-                      </ul>
+                <button 
+                  onClick={() => setSelectedProject(null)}
+                  className="p-2 hover:bg-ink/5 rounded-full transition-colors group"
+                >
+                  <X size={20} className="text-muted/60 group-hover:text-ink transition-colors" />
+                </button>
+              </div>
+
+              {/* Scrollable Content */}
+              <div className="flex-1 overflow-y-auto scrollbar-hide px-6 py-6 sm:px-10 sm:py-10">
+                <div className="max-w-4xl mx-auto">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="mb-8 sm:mb-10"
+                  >
+                    <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-ink tracking-tight mb-4 leading-[1.15]">
+                      {selectedProject.title}
+                    </h3>
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {selectedProject.tech.map((t, i) => (
+                        <span key={t} className="px-3 py-1 bg-ink/5 rounded-full text-[11px] font-mono text-muted/60 border border-ink/5">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </motion.div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+                    {/* Left Column: Narrative */}
+                    <div className="lg:col-span-7 space-y-8 sm:space-y-10">
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        <p className="text-lg sm:text-xl text-ink/80 leading-relaxed font-medium">
+                          {selectedProject.description[0]}
+                        </p>
+                      </motion.div>
+
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                        className="space-y-5"
+                      >
+                        <h4 className="text-xs font-bold uppercase tracking-[0.3em] text-accent">Core Infrastructure</h4>
+                        <div className="grid grid-cols-1 gap-4">
+                          {selectedProject.description.slice(1).map((line, i) => (
+                            <div key={i} className="group p-4 rounded-2xl bg-ink/[0.02] border border-ink/5 hover:border-accent/20 hover:bg-accent/[0.02] transition-all duration-300">
+                              <div className="flex gap-4 items-start">
+                                <div className="w-6 h-6 rounded-lg bg-accent/10 flex items-center justify-center shrink-0 mt-0.5">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-accent" />
+                                </div>
+                                <p className="text-[15px] sm:text-[16px] text-muted/70 leading-relaxed group-hover:text-ink/80 transition-colors">
+                                  {line}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    </div>
+
+                    {/* Right Column: Visuals & Links */}
+                    <div className="lg:col-span-5 space-y-6 sticky top-0">
+                      {/* Terminal Visual */}
+                      <motion.div 
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.4 }}
+                        className="rounded-2xl border border-ink/10 bg-black/40 overflow-hidden shadow-2xl"
+                      >
+                        <div className="px-4 py-2 bg-ink/5 flex items-center justify-between">
+                          <span className="text-[10px] font-mono text-muted/30">runtime.sh</span>
+                          <div className="flex gap-1">
+                            <div className="w-1.5 h-1.5 rounded-full bg-ink/10" />
+                            <div className="w-1.5 h-1.5 rounded-full bg-ink/10" />
+                          </div>
+                        </div>
+                        <div className="p-6 font-mono text-[12px] leading-relaxed text-accent/60">
+                          <div className="flex gap-3 mb-2">
+                            <span className="text-green-500/40">$</span>
+                            <span className="text-ink/40">init {selectedProject.id}</span>
+                          </div>
+                          <div className="text-muted/20">
+                            {">"} mounting resources...<br/>
+                            {">"} compiling dependencies...<br/>
+                            {">"} optimized for production
+                          </div>
+                          <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 opacity-30">
+                            {selectedProject.tech.slice(0, 4).map(t => (
+                              <span key={t}>#{t.toLowerCase()}</span>
+                            ))}
+                          </div>
+                        </div>
+                      </motion.div>
+
+                      {/* Action Cards */}
+                      <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 }}
+                        className="space-y-4"
+                      >
+                        {selectedProject.link && (
+                          <a 
+                            href={selectedProject.link} 
+                            target="_blank" 
+                            rel="noreferrer"
+                            className="group flex items-center justify-between p-4 rounded-xl bg-ink text-bg hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl"
+                          >
+                            <div className="flex items-center gap-4">
+                              <div className="p-2.5 bg-bg/10 rounded-xl group-hover:rotate-12 transition-transform">
+                                <Github size={20} />
+                              </div>
+                              <div className="text-left">
+                                <div className="text-[13px] font-bold">Source Code</div>
+                                <div className="text-[10px] opacity-60 font-mono tracking-tight">github.com/{selectedProject.id}</div>
+                              </div>
+                            </div>
+                            <ExternalLink size={18} className="opacity-40 group-hover:opacity-100 transition-opacity" />
+                          </a>
+                        )}
+
+                        {selectedProject.demoUrl && (
+                          <a 
+                            href={selectedProject.demoUrl} 
+                            target="_blank" 
+                            rel="noreferrer"
+                            className="group flex items-center justify-between p-4 rounded-xl bg-bg border border-ink/10 hover:border-accent/40 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                          >
+                            <div className="flex items-center gap-4">
+                              <div className="p-2.5 bg-accent/5 rounded-xl text-accent">
+                                <ExternalLink size={20} />
+                              </div>
+                              <div className="text-left">
+                                <div className="text-[13px] font-bold">Live Demonstration</div>
+                                <div className="text-[10px] text-muted/60 font-mono tracking-tight">deployment_active.sh</div>
+                              </div>
+                            </div>
+                            <ArrowUpRight size={18} className="text-muted/20 group-hover:text-accent transition-colors" />
+                          </a>
+                        )}
+                      </motion.div>
+
+                      {/* Stats / Meta Info */}
+                      <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.6 }}
+                        className="p-5 rounded-xl bg-ink/[0.01] border border-ink/5 space-y-3"
+                      >
+                         <div className="flex justify-between items-center text-[11px]">
+                           <span className="text-muted/40 font-mono uppercase tracking-widest">Status</span>
+                           <span className="text-green-500 font-bold flex items-center gap-1.5">
+                             <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                             Production Ready
+                           </span>
+                         </div>
+                         <div className="flex justify-between items-center text-[11px]">
+                           <span className="text-muted/40 font-mono uppercase tracking-widest">Role</span>
+                           <span className="text-ink font-bold">Lead Developer</span>
+                         </div>
+                         <div className="flex justify-between items-center text-[11px]">
+                           <span className="text-muted/40 font-mono uppercase tracking-widest">Type</span>
+                           <span className="text-ink font-bold">Open Source</span>
+                         </div>
+                      </motion.div>
                     </div>
                   </div>
-                  <div className="space-y-6">
-                    <div className="space-y-3">
-                      <span className="text-[12px] sm:text-[13px] text-muted/40 font-semibold block">Technical stack</span>
-                      <div className="flex flex-wrap gap-2">
-                        {selectedProject.tech.map(t => (
-                          <span key={t} className="px-3.5 py-1.5 bg-ink/5 text-ink rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-accent/10 transition-colors">{t}</span>
-                        ))}
-                      </div>
-                    </div>
-                    {selectedProject.link && (
-                      <a href={selectedProject.link} target="_blank" rel="noreferrer"
-                        className="w-full py-3.5 bg-ink text-bg rounded-xl font-bold text-[12px] sm:text-[13px] transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2.5 tracking-tight shadow-lg">
-                        Access repository <ExternalLink size={13} />
-                      </a>
-                    )}
-                  </div>
                 </div>
+                
+                {/* Mobile Spacing Footer */}
+                <div className="h-20 sm:hidden" />
               </div>
             </motion.div>
           </div>

@@ -1,55 +1,46 @@
 import { createClient } from "@supabase/supabase-js";
 
-// ─── Production URL Resolution ─────────────────────────────────────────────
-// NEVER rely on window.location.origin alone — it returns localhost during dev
-// and can be spoofed. Always prefer the explicit env var.
-export const PRODUCTION_URL =
-  import.meta.env.VITE_SITE_URL?.replace(/\/$/, "") ||
-  (import.meta.env.PROD
-    ? "https://mithunr.vercel.app"
-    : "http://localhost:5173");
+const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL || "";
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
 
-// ─── Supabase Client ────────────────────────────────────────────────────────
-const supabaseUrl =
-  import.meta.env.VITE_PUBLIC_SUPABASE_URL ||
-  "https://fvuikdbaheghakxhsnuy.supabase.co";
+// Production-grade safety: only initialize with real data or non-crashing placeholders
+export const supabase = createClient(
+  supabaseUrl.startsWith("http")
+    ? supabaseUrl
+    : "https://fvuikdbaheghakxhsnuy.supabase.co",
+  supabaseAnonKey.length > 20
+    ? supabaseAnonKey
+    : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.placeholder",
+);
 
-const supabaseAnonKey =
-  import.meta.env.VITE_SUPABASE_ANON_KEY ||
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ2dWlrZGJhaGVnaGFreGhzbnV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwNTYzOTAsImV4cCI6MjA5MzYzMjM5MH0.ytMdGqQwB3dNfDqB0Z0Qn1cDDx_BdpIjhsH_V1usPq0";
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    // PKCE flow: tokens arrive as ?code= query param (not URL hash).
-    // This is essential for SPA magic links to work correctly in production.
-    // The /auth/callback route exchanges the code for a real session.
-    flowType: "pkce",
-
-    // Persist session in localStorage across page reloads
-    persistSession: true,
-
-    // Auto-refresh the JWT before it expires
-    autoRefreshToken: true,
-
-    // Let Supabase detect the session from URL on every page load
-    detectSessionInUrl: true,
-
-    // Namespaced storage key to avoid collisions with other apps
-    storageKey: "portfolio-cms-auth-v1",
-  },
-});
-
-// ─── Dev Diagnostics ────────────────────────────────────────────────────────
+// Debug logging for production troubleshooting
 if (import.meta.env.DEV) {
-  console.group("[Supabase] Config");
-  console.log("URL:", supabaseUrl ? "✓ Set" : "✗ Missing");
-  console.log("Key:", supabaseAnonKey?.length > 20 ? "✓ Set" : "✗ Missing");
-  console.log("Flow:", "pkce");
-  console.log("Production URL:", PRODUCTION_URL);
-  console.groupEnd();
+  console.log("Supabase Config:", {
+    url: supabaseUrl ? "✓ Set" : "✗ Missing",
+    key: supabaseAnonKey ? "✓ Set" : "✗ Missing",
+    keyLength: supabaseAnonKey.length,
+  });
 }
 
-// ─── Types ──────────────────────────────────────────────────────────────────
+// Test the client initialization
+if (import.meta.env.DEV) {
+  supabase.auth.getSession().then(({ data, error }) => {
+    if (error) {
+      console.error("Supabase client test failed:", error);
+    } else {
+      console.log("Supabase client initialized successfully");
+    }
+  });
+}
+
+// Production error handling
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error(
+    "Supabase configuration missing. Please check environment variables.",
+  );
+}
+
+// Helper types for your database tables (you can expand these as you define your schema)
 export type Tables = {
   profile: {
     id: string;

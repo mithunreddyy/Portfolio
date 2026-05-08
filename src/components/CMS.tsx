@@ -24,7 +24,7 @@ import {
 import { AnimatePresence, motion } from "motion/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { PERSONAL_INFO } from "../constants";
-import { PRODUCTION_URL, supabase } from "../lib/supabase";
+import { supabase } from "../lib/supabase";
 import { BlogPost, Experience, PersonalInfo, Project } from "../types";
 
 const ADMIN_EMAIL = "mithunreddy1357@gmail.com";
@@ -54,22 +54,15 @@ export function CMS() {
   const [showDebug, setShowDebug] = useState(false);
 
   useEffect(() => {
-    // 1. Get existing session from storage
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
-    // 2. Listen for auth state changes (handles PKCE callback completion,
-    //    token refresh, and sign-out events across tabs)
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
-        setUser(session?.user ?? null);
-      } else if (event === "SIGNED_OUT") {
-        setUser(null);
-      }
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
     });
 
     return () => subscription.unsubscribe();
@@ -157,25 +150,17 @@ export function CMS() {
     setAuthLoading(true);
     setError(null);
     try {
-      // Always redirect to /auth/callback — this is the PKCE code exchange
-      // endpoint. Never use window.location.origin directly; PRODUCTION_URL
-      // is determined at build time from VITE_SITE_URL env var.
-      const callbackUrl = `${PRODUCTION_URL}/auth/callback`;
-
       const { error } = await supabase.auth.signInWithOtp({
         email,
-        options: {
-          emailRedirectTo: callbackUrl,
-          // shouldCreateUser: false — only allow existing users (optional hardening)
-        },
+        options: { emailRedirectTo: window.location.origin + "/cms" },
       });
       if (error) {
-        console.error("[CMS] Supabase OTP error:", error);
+        console.error("Supabase auth error:", error);
         throw error;
       }
       setMagicLinkSent(true);
     } catch (err: any) {
-      console.error("[CMS] Login error:", err);
+      console.error("Login error:", err);
       setError(
         err.message ||
           "Authentication failed. Please check your connection and try again.",

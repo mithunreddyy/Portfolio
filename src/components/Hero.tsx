@@ -58,7 +58,7 @@ export function Hero({ personalInfo }: { personalInfo: PersonalInfo }) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
               <h1 className="text-2xl sm:text-[20px] font-semibold text-ink tracking-tight">{personalInfo.name}</h1>
-              <img src="/verified-badge.png" alt="Verified" className="w-4 h-4 sm:w-[16px] sm:h-[16px] object-contain shrink-0" />
+              <img src="/verified-badge.png" alt="Verified" className="w-4 h-4 sm:w-[18px] sm:h-[18px] object-contain shrink-0" />
             </div>
 
             {/* Live Indicator */}

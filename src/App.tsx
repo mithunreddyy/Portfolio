@@ -1,7 +1,8 @@
 import { motion, useScroll, useSpring } from 'motion/react';
-import React, { Suspense, lazy } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Blog } from './components/Blog';
+import { BlogPostView } from './components/BlogPostView';
+import { CMS } from './components/CMS';
 import { Dock } from './components/Dock';
 import { ExperienceSection, Skills } from './components/Experience';
 import { Footer } from './components/Footer';
@@ -10,19 +11,6 @@ import { Hero } from './components/Hero';
 import { Projects } from './components/Projects';
 import { SEO } from './components/SEO';
 import { usePortfolioData } from './hooks/usePortfolioData';
-
-// Advanced Code Splitting
-const BlogPostView = lazy(() => import('./components/BlogPostView').then(m => ({ default: m.BlogPostView })));
-const CMS = lazy(() => import('./components/CMS').then(m => ({ default: m.CMS })));
-const AuthCallback = lazy(() => import('./components/AuthCallback').then(m => ({ default: m.AuthCallback })));
-
-// Ultra-fast loader for Suspense
-const RouteLoader = () => (
-  <div className="min-h-screen bg-bg flex items-center justify-center">
-    <div className="w-6 h-6 border-2 border-accent/10 border-t-accent rounded-full animate-spin" />
-  </div>
-);
-
 
 function Portfolio() {
   const { personalInfo, projects, experiences, blogs, loading } = usePortfolioData();
@@ -71,14 +59,11 @@ export default function App() {
   return (
     <Router>
       <div className="min-h-screen bg-bg text-ink relative selection:bg-accent/30 selection:text-ink">
-        <Suspense fallback={<RouteLoader />}>
-          <Routes>
-            <Route path="/" element={<Portfolio />} />
-            <Route path="/cms" element={<CMS />} />
-            <Route path="/auth/callback" element={<AuthCallback />} />
-            <Route path="/blog/:slug" element={<BlogPostView />} />
-          </Routes>
-        </Suspense>
+        <Routes>
+          <Route path="/" element={<Portfolio />} />
+          <Route path="/cms" element={<CMS />} />
+          <Route path="/blog/:slug" element={<BlogPostView />} />
+        </Routes>
       </div>
     </Router>
   );

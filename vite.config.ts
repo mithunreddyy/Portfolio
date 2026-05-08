@@ -15,17 +15,6 @@ export default defineConfig(({mode}) => {
         '@': path.resolve(__dirname, '.'),
       },
     },
-    build: {
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            'vendor-ui': ['lucide-react', 'motion', 'react-router-dom'],
-            'vendor-core': ['react', 'react-dom'],
-          }
-        }
-      }
-    },
-
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       // Do not modifyâfile watching is disabled to prevent flickering during agent edits.

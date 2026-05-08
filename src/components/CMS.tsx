@@ -150,9 +150,12 @@ export function CMS() {
     setAuthLoading(true);
     setError(null);
     try {
+      const siteUrl =
+        import.meta.env.VITE_SITE_URL?.replace(/\/$/, "") ||
+        window.location.origin;
       const { error } = await supabase.auth.signInWithOtp({
         email,
-        options: { emailRedirectTo: window.location.origin + "/cms" },
+        options: { emailRedirectTo: siteUrl + "/cms" },
       });
       if (error) {
         console.error("Supabase auth error:", error);

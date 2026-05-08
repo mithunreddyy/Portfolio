@@ -2,6 +2,7 @@ import { motion, useScroll, useSpring } from 'motion/react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Blog } from './components/Blog';
 import { BlogPostView } from './components/BlogPostView';
+import { AuthCallback } from './components/AuthCallback';
 import { CMS } from './components/CMS';
 import { Dock } from './components/Dock';
 import { ExperienceSection, Skills } from './components/Experience';
@@ -62,6 +63,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Portfolio />} />
           <Route path="/cms" element={<CMS />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/blog/:slug" element={<BlogPostView />} />
         </Routes>
       </div>

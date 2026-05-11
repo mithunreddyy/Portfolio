@@ -2,6 +2,7 @@ import { ArrowUpRight, Github, Linkedin, Mail, MapPin } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { FormEvent, useState } from "react";
 import { PERSONAL_INFO } from "../constants";
+import { supabase } from "../lib/supabase";
 
 export function Footer() {
   const personalInfo = PERSONAL_INFO;
@@ -17,7 +18,7 @@ export function Footer() {
   const validateEmail = (email: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
     if (!formState.name.trim()) {
@@ -35,9 +36,27 @@ export function Footer() {
       setErrorMessage("Please enter a message.");
       return;
     }
-    setStatus("success");
-    setFormState({ name: "", email: "", message: "" });
-    setTimeout(() => setStatus("idle"), 3000);
+
+    try {
+      const { error } = await supabase.from('messages').insert([
+        {
+          name: formState.name,
+          email: formState.email,
+          message: formState.message,
+          created_at: new Date().toISOString()
+        }
+      ]);
+
+      if (error) throw error;
+
+      setStatus("success");
+      setFormState({ name: "", email: "", message: "" });
+      setTimeout(() => setStatus("idle"), 3000);
+    } catch (err: any) {
+      console.error("Error sending message:", err);
+      setStatus("error");
+      setErrorMessage("Failed to send message. Please try again.");
+    }
   };
 
   const socials = [

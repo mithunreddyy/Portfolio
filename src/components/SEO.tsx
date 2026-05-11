@@ -10,11 +10,11 @@ interface SEOProps {
 }
 
 export function SEO({ 
-  title = "Mithun Reddy | Full-Stack Software Engineer & AI Enthusiast", 
+  title = "Mithun Reddy", 
   description = "Full-Stack Software Engineer & AI Enthusiast with 2+ years of experience in designing scalable web architectures and machine learning pipelines.",
-  canonical = "https://mithunreddy.dev", 
+  canonical = "https://mithunr.vercel.app", 
   type = "website",
-  image = "https://mithunreddy.dev/og-image.png",
+  image = "https://mithunr.vercel.app/og-image.png",
   schema
 }: SEOProps) {
   const siteTitle = title.includes("Mithun Reddy") ? title : `${title} | Mithun Reddy`;

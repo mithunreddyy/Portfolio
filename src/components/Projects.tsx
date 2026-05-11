@@ -175,7 +175,7 @@ export function Projects({ projects }: { projects: Project[] }) {
                     <div className="w-2.5 h-2.5 rounded-full bg-amber-500/20 border border-amber-500/30" />
                     <div className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/30" />
                   </div>
-                  <span className="text-[10px] font-mono text-muted/40 uppercase tracking-[0.2em] ml-2">Project Case /{selectedProject.id}</span>
+                  <span className="text-[10px] font-mono text-muted/40 uppercase tracking-[0.2em] ml-2">Project Case / {selectedProject.id}</span>
                 </div>
                 <button 
                   onClick={() => setSelectedProject(null)}
@@ -253,7 +253,6 @@ export function Projects({ projects }: { projects: Project[] }) {
                         className="rounded-2xl border border-ink/10 bg-black/40 overflow-hidden shadow-2xl"
                       >
                         <div className="px-4 py-2 bg-ink/5 flex items-center justify-between">
-                          <span className="text-[10px] font-mono text-muted/30">runtime.sh</span>
                           <div className="flex gap-1">
                             <div className="w-1.5 h-1.5 rounded-full bg-ink/10" />
                             <div className="w-1.5 h-1.5 rounded-full bg-ink/10" />
@@ -264,12 +263,12 @@ export function Projects({ projects }: { projects: Project[] }) {
                             <span className="text-green-500/40">$</span>
                             <span className="text-ink/40">init {selectedProject.id}</span>
                           </div>
-                          <div className="text-muted/20">
+                          <div className="text-muted/80">
                             {">"} mounting resources...<br/>
                             {">"} compiling dependencies...<br/>
                             {">"} optimized for production
                           </div>
-                          <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 opacity-30">
+                          <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 opacity-80">
                             {selectedProject.tech.slice(0, 4).map(t => (
                               <span key={t}>#{t.toLowerCase()}</span>
                             ))}

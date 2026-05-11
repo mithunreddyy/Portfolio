@@ -1,13 +1,14 @@
 import { AppWindow, Briefcase, Layers, Mail, MessageSquare, Moon, Sun, User } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
+import { soundEngine } from '../lib/SoundEngine';
 
 const dockItems = [
   { id: 'hero', icon: User, label: 'Profile' },
   { id: 'projects', icon: AppWindow, label: 'Work' },
   { id: 'experience', icon: Briefcase, label: 'Experience' },
   { id: 'skills', icon: Layers, label: 'Stack' },
-   { id: 'blog', icon: MessageSquare, label: 'Blog' },
+  { id: 'blog', icon: MessageSquare, label: 'Blog' },
   { id: 'contact', icon: Mail, label: 'Contact' },
 ];
 
@@ -23,6 +24,7 @@ export function Dock() {
   }, []);
 
   const toggleTheme = () => {
+    soundEngine.playClick();
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
     document.documentElement.setAttribute('data-theme', newTheme);
@@ -61,41 +63,52 @@ export function Dock() {
       className="fixed bottom-4 sm:bottom-6 lg:bottom-8 left-0 right-0 z-[100] flex justify-center px-4 dock-safe-area"
       aria-label="Navigation dock"
     >
-      <div className="flex items-center gap-[2px] sm:gap-1 h-[40px] sm:h-[44px] lg:h-[48px] px-1.5 sm:px-2 bg-[#111111] rounded-[16px] sm:rounded-[18px] border border-white/[0.08] shadow-2xl">
+      <div className="flex items-center gap-2 sm:gap-2 lg:gap-2 h-[40px] sm:h-[44px] lg:h-[48px] px-2 sm:px-2 lg:px-3 bg-bg/50 backdrop-blur-lg rounded-[16px] sm:rounded-[18px] lg:rounded-[17px] border border-ink/[0.1] shadow-xl">
         {dockItems.map((item, index) => {
           const Icon = item.icon;
           return (
             <button
               key={`${item.id}-${index}`}
-              onClick={() => scrollToSection(item.id)}
+              onClick={() => {
+                soundEngine.playClick();
+                scrollToSection(item.id);
+              }}
               aria-label={item.label}
-              className={`relative flex items-center justify-center w-[32px] h-[32px] sm:w-[36px] sm:h-[36px] lg:w-[40px] lg:h-[40px] rounded-[10px] sm:rounded-[12px] transition-all duration-200 group ${
+              className={`relative flex items-center justify-center w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] lg:w-[35px] lg:h-[35px] rounded-[10px] sm:rounded-[12px] transition-all duration-200 group ${
                 activeSection === item.id 
-                  ? 'text-white bg-white/[0.04]' 
-                  : 'text-[#888888] hover:text-white hover:bg-white/[0.04]'
+                  ? 'text-ink' 
+                  : 'text-ink/60 hover:text-ink hover:bg-ink/5'
               }`}
             >
               <Icon className="w-[14px] h-[14px] sm:w-[16px] sm:h-[16px] lg:w-[18px] lg:h-[18px]" strokeWidth={1.25} />
               
-              <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-[#111111] border border-white/[0.08] text-white rounded-[8px] text-[10px] sm:text-[11px] font-medium tracking-wide opacity-0 group-hover:md:opacity-100 transition-all scale-90 group-hover:scale-100 pointer-events-none whitespace-nowrap shadow-2xl z-[110]">
+              {activeSection === item.id && (
+                <motion.div
+                  layoutId="activeDockDot"
+                  className="absolute -bottom-[1px] sm:-bottom-[2px] lg:-bottom-[2px] w-[3px] h-[3px] sm:w-[3.5px] sm:h-[3.5px] lg:w-[4px] lg:h-[4px] rounded-full bg-ink/40"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
+
+              <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-ink text-bg rounded-[8px] text-[10px] sm:text-[11px] font-medium tracking-wide opacity-0 group-hover:md:opacity-100 transition-all scale-90 group-hover:scale-100 pointer-events-none whitespace-nowrap shadow-2xl z-[110]">
                 {item.label}
               </div>
             </button>
           );
         })}
 
-        <div className="w-[1px] h-4 sm:h-5 bg-white/[0.08] mx-0.5 sm:mx-1" />
+        <div className="w-[1px] h-4 sm:h-5 bg-ink/5 mx-1 sm:mx-2 lg:mx-2" />
 
         <button
           onClick={toggleTheme}
           aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-          className="relative flex items-center justify-center w-[32px] h-[32px] sm:w-[36px] sm:h-[36px] lg:w-[40px] lg:h-[40px] rounded-[10px] sm:rounded-[12px] transition-all duration-200 text-[#888888] hover:text-white hover:bg-white/[0.04] group"
+          className="relative flex items-center justify-center w-[25px] h-[25px] sm:w-[30px] sm:h-[30px] lg:w-[35px] lg:h-[35px] rounded-[10px] sm:rounded-[12px] transition-all duration-200 text-ink/60 hover:text-ink hover:bg-ink/5 group"
         >
           {theme === 'dark' 
             ? <Sun className="w-[14px] h-[14px] sm:w-[16px] sm:h-[16px] lg:w-[18px] lg:h-[18px]" strokeWidth={1.25} /> 
             : <Moon className="w-[14px] h-[14px] sm:w-[16px] sm:h-[16px] lg:w-[18px] lg:h-[18px]" strokeWidth={1.25} />}
             
-          <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-[#111111] border border-white/[0.08] text-white rounded-[8px] text-[10px] sm:text-[11px] font-medium tracking-wide opacity-0 group-hover:md:opacity-100 transition-all scale-90 group-hover:scale-100 pointer-events-none whitespace-nowrap shadow-2xl z-[110]">
+          <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-ink text-bg rounded-[8px] text-[10px] sm:text-[11px] font-medium tracking-wide opacity-0 group-hover:md:opacity-100 transition-all scale-90 group-hover:scale-100 pointer-events-none whitespace-nowrap shadow-2xl z-[110]">
             Theme
           </div>
         </button>

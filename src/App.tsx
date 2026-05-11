@@ -1,8 +1,10 @@
 import { motion, useScroll, useSpring } from 'motion/react';
+import { useEffect, useState } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Blog } from './components/Blog';
 import { BlogPostView } from './components/BlogPostView';
 import { CMS } from './components/CMS';
+import { CommandPalette } from './components/CommandPalette';
 import { Dock } from './components/Dock';
 import { ExperienceSection, Skills } from './components/Experience';
 import { Footer } from './components/Footer';
@@ -10,13 +12,23 @@ import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { Projects } from './components/Projects';
 import { SEO } from './components/SEO';
-import { usePortfolioData } from './hooks/usePortfolioData';
 import { SmoothScroll } from './components/SmoothScroll';
-import { CommandPalette } from './components/CommandPalette';
-import { CanvasBackground } from './components/CanvasBackground';
+import { usePortfolioData } from './hooks/usePortfolioData';
+import { soundEngine } from './lib/SoundEngine';
 
 function Portfolio() {
   const { personalInfo, projects, experiences, blogs, loading } = usePortfolioData();
+
+  // Initialize sound engine on first interaction
+  useEffect(() => {
+    const initAudio = () => {
+      soundEngine.init();
+      document.removeEventListener('click', initAudio);
+    };
+    document.addEventListener('click', initAudio);
+    return () => document.removeEventListener('click', initAudio);
+  }, []);
+
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -34,29 +46,36 @@ function Portfolio() {
 
   return (
     <div className="relative font-sans">
+
       <SEO />
       <SmoothScroll />
       <CommandPalette />
-      <CanvasBackground />
+     
 
-      <Header personalInfo={personalInfo} />
-      <Dock />
-
-      {/* Scroll progress indicator */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-[2px] bg-accent origin-left z-[200]"
-        style={{ scaleX }}
-      />
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 0.2 }}
+      >
+        <Header personalInfo={personalInfo} />
+        <Dock />
 
-      <main className="relative z-10">
-        <Hero personalInfo={personalInfo} />
-        <Projects projects={projects} />
-        <ExperienceSection experiences={experiences} />
-        <Skills />
-        <Blog blogs={blogs} />
-      </main>
+        {/* Scroll progress indicator */}
+        <motion.div
+          className="fixed top-0 left-0 right-0 h-[2px] bg-accent origin-left z-[200]"
+          style={{ scaleX }}
+        />
 
-      <Footer />
+        <main className="relative z-10">
+          <Hero personalInfo={personalInfo} />
+          <Projects projects={projects} />
+          <ExperienceSection experiences={experiences} />
+          <Skills />
+          <Blog blogs={blogs} />
+        </main>
+
+        <Footer />
+      </motion.div>
     </div>
   );
 }

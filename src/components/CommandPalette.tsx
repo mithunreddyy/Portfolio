@@ -2,6 +2,7 @@ import { Code, FileText, Mail, MessageSquare, Search } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { soundEngine } from '../lib/SoundEngine';
 
 export function CommandPalette() {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,12 +13,18 @@ export function CommandPalette() {
     const down = (e: KeyboardEvent) => {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setIsOpen((open) => !open);
+        setIsOpen((open) => {
+          if (!open) soundEngine.playClick();
+          return !open;
+        });
       }
       if (e.key === 'Escape') setIsOpen(false);
     };
 
-    const handleCustomEvent = () => setIsOpen(true);
+    const handleCustomEvent = () => {
+      soundEngine.playClick();
+      setIsOpen(true);
+    };
 
     document.addEventListener('keydown', down);
     window.addEventListener('open-command-palette', handleCustomEvent);

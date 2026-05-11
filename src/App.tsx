@@ -11,6 +11,9 @@ import { Hero } from './components/Hero';
 import { Projects } from './components/Projects';
 import { SEO } from './components/SEO';
 import { usePortfolioData } from './hooks/usePortfolioData';
+import { SmoothScroll } from './components/SmoothScroll';
+import { CommandPalette } from './components/CommandPalette';
+import { CanvasBackground } from './components/CanvasBackground';
 
 function Portfolio() {
   const { personalInfo, projects, experiences, blogs, loading } = usePortfolioData();
@@ -32,6 +35,9 @@ function Portfolio() {
   return (
     <div className="relative font-sans">
       <SEO />
+      <SmoothScroll />
+      <CommandPalette />
+      <CanvasBackground />
 
       <Header personalInfo={personalInfo} />
       <Dock />

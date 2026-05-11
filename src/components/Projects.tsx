@@ -58,7 +58,7 @@ export function Projects({ projects }: { projects: Project[] }) {
                 onClick={() => setSelectedProject(project)}
                 className="cursor-pointer group active:scale-[0.98] transition-transform"
               >
-                <div className="bg-bg rounded-xl shadow-xl overflow-hidden border border-ink/[0.06]">
+                <div className="bg-bg rounded-lg shadow-lg dark:shadow-[0_30px_60px_-15px_rgba(255,255,255,0.05)] overflow-hidden border border-ink/[0.1]">
                   <div className="h-7 bg-ink/[0.03] flex items-center px-3 gap-1">
                     <div className="w-1.5 h-1.5 rounded-full bg-red-500/20 border border-red-500/30" />
                     <div className="w-1.5 h-1.5 rounded-full bg-amber-500/20 border border-amber-500/30" />
@@ -73,7 +73,7 @@ export function Projects({ projects }: { projects: Project[] }) {
                     <div className="flex items-center justify-between">
                       <div className="flex flex-wrap gap-2">
                         {project.tech.slice(0, 3).map(t => (
-                          <span key={t} className="text-[9px] font-bold text-muted/30 uppercase tracking-widest">{t}</span>
+                          <span key={t} className="text-[9px] font-bold text-muted/30 uppercase tracking-none">{t}</span>
                         ))}
                       </div>
                       <div className="p-2 bg-ink/5 rounded-md group-active:bg-ink group-active:text-bg transition-all">
@@ -113,7 +113,7 @@ export function Projects({ projects }: { projects: Project[] }) {
                     className="absolute cursor-pointer group"
                     style={{ zIndex: style.zIndex }}
                   >
-                    <div className="bg-bg rounded-2xl shadow-[0_30px_80px_-15px_rgba(0,0,0,0.7)] group-hover:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.9)] overflow-hidden w-[280px] md:w-[300px] lg:w-[320px] aspect-[4/3] flex flex-col transition-all duration-500 border border-ink/[0.05]">
+                    <div className="bg-bg rounded-2xl shadow-xl group-hover:shadow-2xl dark:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.05)] dark:group-hover:shadow-[0_30px_60px_-15px_rgba(255,255,255,0.08)] overflow-hidden w-[280px] md:w-[300px] lg:w-[320px] aspect-[4/3] flex flex-col transition-all duration-500 border border-ink/[0.05]">
                       <div className="h-7 bg-ink/[0.03] flex items-center px-3 gap-1 border-b border-ink/[0.02]">
                         <div className="w-1.5 h-1.5 rounded-full bg-red-500/20 border border-red-500/30" />
                         <div className="w-1.5 h-1.5 rounded-full bg-amber-500/20 border border-amber-500/30" />

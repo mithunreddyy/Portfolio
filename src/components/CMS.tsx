@@ -30,7 +30,7 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import React, { useCallback, useEffect, useState } from "react";
-import { PERSONAL_INFO } from "../constants";
+import { PERSONAL_INFO, PROJECTS, EXPERIENCES, BLOG_POSTS } from "../constants";
 import { supabase } from "../lib/supabase";
 import { BlogPost, Experience, PersonalInfo, Project } from "../types";
 
@@ -254,6 +254,54 @@ export function CMS() {
       showToast(`Successfully saved ${table.slice(0, -1)}.`, "success");
       setIsDrawerOpen(false);
       setEditingItem(null);
+      fetchData(true);
+    } catch (err: any) {
+      showToast(err.message, "error");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const migrateStaticData = async () => {
+    if (!window.confirm("This will copy all missing hardcoded projects, experiences, and blogs into the database. Proceed?")) return;
+    setActionLoading(true);
+    try {
+      // 1. Projects
+      const newProjects = PROJECTS.filter(p => !projects.some(dbP => dbP.title === p.title));
+      if (newProjects.length > 0) {
+        const projectPayloads = newProjects.map((p, index) => ({
+          title: p.title, description: p.description, tech: p.tech,
+          link: p.link, demo_url: p.demoUrl,
+          order_index: (p as any).order_index || (projects.length + index)
+        }));
+        const { error } = await supabase.from('projects').insert(projectPayloads);
+        if (error) throw new Error("Projects Migration: " + error.message);
+      }
+
+      // 2. Experiences
+      const newExps = EXPERIENCES.filter(e => !experiences.some(dbE => dbE.role === e.role && dbE.company === e.company));
+      if (newExps.length > 0) {
+        const expPayloads = newExps.map((e, index) => ({
+          role: e.role, company: e.company, period: e.period, location: e.location,
+          highlights: e.highlights, order_index: (e as any).order_index || (experiences.length + index)
+        }));
+        const { error } = await supabase.from('experience').insert(expPayloads);
+        if (error) throw new Error("Experiences Migration: " + error.message);
+      }
+
+      // 3. Blogs
+      const newBlogs = BLOG_POSTS.filter(b => !blogs.some(dbB => dbB.slug === b.slug));
+      if (newBlogs.length > 0) {
+        const blogPayloads = newBlogs.map(b => ({
+          slug: b.slug, title: b.title, excerpt: b.excerpt,
+          content: b.content, read_time: b.readTime, published: true,
+          created_at: new Date(b.date).toISOString()
+        }));
+        const { error } = await supabase.from('blogs').insert(blogPayloads);
+        if (error) throw new Error("Blogs Migration: " + error.message);
+      }
+
+      showToast(`Migration successful! Added ${newProjects.length} projects, ${newExps.length} experiences, and ${newBlogs.length} blogs.`, "success");
       fetchData(true);
     } catch (err: any) {
       showToast(err.message, "error");
@@ -538,8 +586,8 @@ export function CMS() {
           </header>
 
           <div className="pb-24">
-            {activeTab === "profile" && <ProfileOverview profile={profile} setProfile={setProfile} onSave={() => handleUpsertItem("profile", profile)} loading={actionLoading} />}
-            {activeTab === "projects" && <ProjectGrid items={filteredProjects} onEdit={(it: any) => { setEditingItem(it); setIsDrawerOpen(true); }} onDelete={(id: string) => handleDelete("projects", id)} />}
+            {activeTab === "profile" && <ProfileOverview profile={profile} setProfile={setProfile} onSave={() => handleUpsertItem("profile", profile)} loading={actionLoading} onMigrate={migrateStaticData} />}
+            {activeTab === "projects" && <ProjectGrid items={projects} onEdit={(it: any) => { setEditingItem(it); setIsDrawerOpen(true); }} onDelete={(id: string) => handleDelete("projects", id)} />}
             {activeTab === "experience" && <ExperienceTimeline items={filteredExperiences} onEdit={(it: any) => { setEditingItem(it); setIsDrawerOpen(true); }} onDelete={(id: string) => handleDelete("experience", id)} />}
             {activeTab === "blogs" && <BlogTable items={filteredBlogs} onEdit={(it: any) => { setEditingItem(it); setIsDrawerOpen(true); }} onDelete={(id: string) => handleDelete("blogs", id)} />}
           </div>
@@ -563,7 +611,7 @@ export function CMS() {
    COMPONENTS 
    ══════════════════════════════════════════════ */
 
-function ProfileOverview({ profile, setProfile, onSave, loading }: any) {
+function ProfileOverview({ profile, setProfile, onSave, loading, onMigrate }: any) {
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 max-w-4xl">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -596,6 +644,25 @@ function ProfileOverview({ profile, setProfile, onSave, loading }: any) {
           <h3 className="text-[15px] font-semibold">Executive Summary</h3>
         </div>
         <Field label="Bio / Summary" value={profile.summary} onChange={(v: string) => setProfile((p: any) => ({ ...p, summary: v }))} area />
+      </section>
+
+      <section className="bg-amber-500/5 border border-amber-500/20 p-6 rounded-3xl space-y-4">
+        <div className="flex items-center gap-3 pb-4 border-b border-amber-500/20">
+          <Database size={18} className="text-amber-500" />
+          <h3 className="text-[15px] font-semibold text-amber-500">Database Migration Engine</h3>
+        </div>
+        <p className="text-[13px] text-amber-500/80 leading-relaxed max-w-2xl">
+          Your portfolio currently has hardcoded fallback data (Projects, Blogs, Experience). 
+          Execute this migration to permanently inject all static data into your active Supabase database. 
+          Once completed, you will be able to dynamically edit and delete all existing entries directly from this CMS.
+        </p>
+        <button
+          onClick={onMigrate}
+          disabled={loading}
+          className="bg-amber-500 text-bg px-5 py-2.5 rounded-xl text-[14px] font-bold hover:scale-[1.02] active:scale-[0.98] transition-transform shadow-lg disabled:opacity-50"
+        >
+          {loading ? "Executing Migration..." : "Migrate Static Data"}
+        </button>
       </section>
 
       <div className="flex justify-end pt-4">

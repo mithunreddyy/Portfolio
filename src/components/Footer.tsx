@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import { PERSONAL_INFO } from "../constants";
 import { supabase } from "../lib/supabase";
 
+
 export function Footer() {
   const personalInfo = PERSONAL_INFO;
   const currentYear = new Date().getFullYear();
@@ -38,24 +39,59 @@ export function Footer() {
     }
 
     try {
-      const { error } = await supabase.from('messages').insert([
+      // Get the key from env, or use a placeholder to trigger the developer warning
+      const web3FormsKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || "YOUR_WEB3FORMS_ACCESS_KEY";
+      
+      // 1. Send actual email notification to your inbox via Web3Forms API
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          access_key: web3FormsKey,
+          name: formState.name,
+          email: formState.email,
+          message: formState.message,
+          subject: `New Portfolio Contact from ${formState.name}`,
+          from_name: "Portfolio Contact Form",
+        }),
+      });
+
+      const result = await response.json();
+      
+      // 2. Log it to Supabase as a backend backup (fails silently if table is missing)
+      supabase.from('messages').insert([
         {
           name: formState.name,
           email: formState.email,
           message: formState.message,
           created_at: new Date().toISOString()
         }
-      ]);
+      ]).then(({ error }) => {
+        if (error) console.error("Supabase log failed:", error);
+      });
 
-      if (error) throw error;
+      // Handle delivery failures
+      if (!result.success) {
+         if (web3FormsKey === "YOUR_WEB3FORMS_ACCESS_KEY") {
+           throw new Error("Email service not configured. Add VITE_WEB3FORMS_ACCESS_KEY to .env");
+         }
+         throw new Error(result.message || "Failed to deliver email");
+      }
 
       setStatus("success");
       setFormState({ name: "", email: "", message: "" });
       setTimeout(() => setStatus("idle"), 3000);
     } catch (err: any) {
-      console.error("Error sending message:", err);
+      console.error("Error delivering message:", err);
       setStatus("error");
-      setErrorMessage("Failed to send message. Please try again.");
+      setErrorMessage(
+        err.message?.includes("VITE_WEB3FORMS_ACCESS_KEY") 
+          ? err.message 
+          : "Failed to deliver message. Please try again."
+      );
     }
   };
 
@@ -153,12 +189,13 @@ export function Footer() {
         </AnimatePresence>
 
         <div className="flex items-center justify-between pt-1">
-          <button
-            type="submit"
-            className="h-10 px-6 bg-ink text-bg hover:scale-[1.02] active:scale-[0.98] rounded-lg text-[13px] sm:text-[14px] font-medium transition-all flex items-center gap-2"
-          >
-            Send message
-          </button>
+          
+            <button
+              type="submit"
+              className="h-10 px-6 bg-ink text-bg hover:scale-[1.02] active:scale-[0.98] rounded-xl text-[13px] sm:text-[14px] font-medium transition-all flex items-center gap-2"
+            >
+              Send message
+            </button>
           <div className="hidden sm:flex items-center gap-2 text-[12px] text-muted/35 font-medium">
             <span>or</span>
             <span className="text-sm leading-none">↵</span>

@@ -99,6 +99,7 @@ export function Skills() {
               className="w-6 h-6 sm:w-7 sm:h-7 object-contain transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.15)]"
               referrerPolicy="no-referrer"
               loading="lazy"
+              decoding="async"
             />
             <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 translate-y-full px-2 py-0.5 bg-ink text-bg text-[8px] font-bold whitespace-nowrap rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
               {skill}

@@ -58,7 +58,13 @@ export function Hero({ personalInfo }: { personalInfo: PersonalInfo }) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
               <h1 className="text-2xl sm:text-[20px] font-semibold text-ink tracking-tight">{personalInfo.name}</h1>
-              <img src="/verified-badge.png" alt="Verified" className="w-4 h-4 sm:w-[18px] sm:h-[18px] object-contain shrink-0" />
+              <img 
+                src="/verified-badge.png" 
+                alt="Verified" 
+                className="w-4 h-4 sm:w-[18px] sm:h-[18px] object-contain shrink-0" 
+                fetchPriority="high"
+                decoding="async"
+              />
             </div>
 
             {/* Live Indicator */}
@@ -85,7 +91,13 @@ export function Hero({ personalInfo }: { personalInfo: PersonalInfo }) {
               ? (personalInfo.summary || '').split('🇮🇳')[0] 
               : (personalInfo.summary || '')}
             {(personalInfo.summary || '').includes('🇮🇳') && (
-              <img src="/indian-flag.png" alt="India" className="inline-block w-[18px] h-[18px] sm:w-[22px] sm:h-[22px] mx-0.5 -translate-y-[2px]" />
+              <img 
+                src="/indian-flag.png" 
+                alt="India" 
+                className="inline-block w-[18px] h-[18px] sm:w-[22px] sm:h-[22px] mx-0.5 -translate-y-[2px]" 
+                decoding="async"
+                loading="lazy"
+              />
             )}
             {(personalInfo.summary || '').includes('🇮🇳') && (personalInfo.summary || '').split('🇮🇳')[1]}
           </p>

@@ -1,9 +1,7 @@
 import { motion, useScroll, useSpring } from 'motion/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense, lazy } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Blog } from './components/Blog';
-import { BlogPostView } from './components/BlogPostView';
-import { CMS } from './components/CMS';
 import { CommandPalette } from './components/CommandPalette';
 import { Dock } from './components/Dock';
 import { ExperienceSection, Skills } from './components/Experience';
@@ -14,6 +12,10 @@ import { Projects } from './components/Projects';
 import { SEO } from './components/SEO';
 import { SmoothScroll } from './components/SmoothScroll';
 import { usePortfolioData } from './hooks/usePortfolioData';
+
+// Lazy load heavy components
+const CMS = lazy(() => import('./components/CMS').then(module => ({ default: module.CMS })));
+const BlogPostView = lazy(() => import('./components/BlogPostView').then(module => ({ default: module.BlogPostView })));
 
 function Portfolio() {
   const { personalInfo, projects, experiences, blogs, loading } = usePortfolioData();
@@ -75,11 +77,13 @@ export default function App() {
   return (
     <Router>
       <div className="min-h-screen bg-bg text-ink relative selection:bg-accent/30 selection:text-ink">
-        <Routes>
-          <Route path="/" element={<Portfolio />} />
-          <Route path="/cms" element={<CMS />} />
-          <Route path="/blog/:slug" element={<BlogPostView />} />
-        </Routes>
+        <Suspense fallback={<div className="min-h-screen bg-bg flex items-center justify-center"><div className="w-8 h-8 border-2 border-accent/20 border-t-accent rounded-full animate-spin" /></div>}>
+          <Routes>
+            <Route path="/" element={<Portfolio />} />
+            <Route path="/cms" element={<CMS />} />
+            <Route path="/blog/:slug" element={<BlogPostView />} />
+          </Routes>
+        </Suspense>
       </div>
     </Router>
   );

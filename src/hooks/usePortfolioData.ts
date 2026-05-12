@@ -23,7 +23,9 @@ export function usePortfolioData() {
           supabase.from('profile').select('*').single(),
           supabase.from('projects').select('*').order('order_index'),
           supabase.from('experience').select('*').order('order_index'),
-          supabase.from('blogs').select('*').order('created_at', { ascending: false })
+          supabase.from('blogs')
+            .select('id, title, excerpt, date, slug, read_time, published, created_at, category')
+            .order('created_at', { ascending: false })
         ]);
 
         if (prof) {
@@ -61,14 +63,14 @@ export function usePortfolioData() {
           const dbBlogs = bgs.filter(b => b.published !== false).map(b => ({
             ...b,
             date: formatDate(b.date || b.created_at),
-            readTime: calculateReadTime(b.content, b.excerpt),
+            readTime: b.read_time || "2 min read",
           }));
           const combined = [...dbBlogs, ...BLOG_POSTS.filter(b => !dbBlogs.some(db => db.slug === b.slug))];
           // Also format local blogs for consistency
           const formattedCombined = combined.map(b => ({
             ...b,
             date: formatDate(b.date),
-            readTime: calculateReadTime(b.content, b.excerpt)
+            readTime: b.readTime || "2 min read"
           }));
           setBlogs(formattedCombined);
         }

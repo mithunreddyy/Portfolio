@@ -30,19 +30,28 @@ export function Dock() {
   };
 
   useEffect(() => {
-    const handleScroll = () => {
-      const sections = dockItems.map(item => document.getElementById(item.id));
-      const scrollPosition = window.scrollY + window.innerHeight / 2;
-      sections.forEach((section) => {
-        if (!section) return;
-        if (scrollPosition >= section.offsetTop && scrollPosition < section.offsetTop + section.offsetHeight) {
-          setActiveSection(section.id);
+    const observerOptions = {
+      root: null,
+      rootMargin: '-50% 0px -50% 0px',
+      threshold: 0
+    };
+
+    const handleIntersect = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
         }
       });
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    const observer = new IntersectionObserver(handleIntersect, observerOptions);
+    
+    dockItems.forEach((item) => {
+      const el = document.getElementById(item.id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
   }, []);
 
   const scrollToSection = (id: string) => {

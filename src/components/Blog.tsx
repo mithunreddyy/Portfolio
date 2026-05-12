@@ -2,7 +2,6 @@ import { ChevronRight, Clock } from "lucide-react";
 import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 
-import { calculateReadTime } from "../lib/utils";
 import { BlogPost } from "../types";
 
 export function Blog({ blogs }: { blogs: BlogPost[] }) {
@@ -37,7 +36,7 @@ export function Blog({ blogs }: { blogs: BlogPost[] }) {
                 </h3>
                 <div className="flex items-center gap-1.5 text-[14px] sm:text-[16px] font-mono text-muted/70 group-hover:text-muted/60 shrink-0 transition-colors">
                   <Clock size={15} className="opacity-90" />
-                  <span>{calculateReadTime(post.content, post.excerpt).split(' ')[0]}m</span>
+                  <span>{(post.readTime || "2").split(' ')[0]}m</span>
                   <ChevronRight size={12} className="text-muted/20 sm:hidden" />
                 </div>
               </div>

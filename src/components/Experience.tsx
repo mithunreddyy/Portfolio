@@ -91,7 +91,7 @@ export function Skills() {
             viewport={{ once: true }}
             whileHover={{ scale: 1.2, y: -2 }}
             whileTap={{ scale: 0.95 }}
-            className="group relative"
+            className="group relative will-change-transform"
           >
             <img
               src={skillIconMap[skill] || ''}

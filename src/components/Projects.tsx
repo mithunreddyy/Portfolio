@@ -56,7 +56,7 @@ export function Projects({ projects }: { projects: Project[] }) {
                 transition={{ delay: index * 0.08, duration: 0.4 }}
                 viewport={{ once: true }}
                 onClick={() => setSelectedProject(project)}
-                className="cursor-pointer group active:scale-[0.98] transition-transform"
+                className="cursor-pointer group active:scale-[0.98] transition-transform will-change-transform"
               >
                 <div className="bg-bg rounded-lg shadow-lg dark:shadow-[0_30px_60px_-15px_rgba(255,255,255,0.05)] overflow-hidden border border-ink/[0.1]">
                   <div className="h-7 bg-ink/[0.03] flex items-center px-3 gap-1">
@@ -110,7 +110,7 @@ export function Projects({ projects }: { projects: Project[] }) {
                     transition={{ delay: index * 0.1, duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
                     viewport={{ once: true }}
                     onClick={() => setSelectedProject(project)}
-                    className="absolute cursor-pointer group"
+                    className="absolute cursor-pointer group will-change-transform"
                     style={{ zIndex: style.zIndex }}
                   >
                     <div className="bg-bg rounded-2xl shadow-xl group-hover:shadow-2xl dark:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.05)] dark:group-hover:shadow-[0_30px_60px_-15px_rgba(255,255,255,0.08)] overflow-hidden w-[280px] md:w-[300px] lg:w-[320px] aspect-[4/3] flex flex-col transition-all duration-500 border border-ink/[0.05]">

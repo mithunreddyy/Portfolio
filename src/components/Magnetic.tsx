@@ -1,6 +1,5 @@
 import { motion, useSpring } from 'motion/react';
 import React, { useRef, useState, useEffect } from 'react';
-import { soundEngine } from '../lib/SoundEngine';
 
 export function Magnetic({ children, intensity = 0.5 }: { children: React.ReactElement, intensity?: number }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -28,16 +27,13 @@ export function Magnetic({ children, intensity = 0.5 }: { children: React.ReactE
     springY.set(position.y);
   }, [position, springX, springY]);
 
-  const handleMouseEnter = () => {
-    soundEngine.playHover();
-  };
+
 
   return (
     <motion.div
       ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={reset}
-      onMouseEnter={handleMouseEnter}
       style={{ x: springX, y: springY }}
       className="inline-block"
     >

@@ -1,7 +1,6 @@
 import { AppWindow, Briefcase, Layers, Mail, MessageSquare, Moon, Sun, User } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
-import { soundEngine } from '../lib/SoundEngine';
 
 const dockItems = [
   { id: 'hero', icon: User, label: 'Profile' },
@@ -24,7 +23,6 @@ export function Dock() {
   }, []);
 
   const toggleTheme = () => {
-    soundEngine.playClick();
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
     document.documentElement.setAttribute('data-theme', newTheme);
@@ -70,7 +68,6 @@ export function Dock() {
             <button
               key={`${item.id}-${index}`}
               onClick={() => {
-                soundEngine.playClick();
                 scrollToSection(item.id);
               }}
               aria-label={item.label}

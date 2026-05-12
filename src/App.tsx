@@ -14,20 +14,11 @@ import { Projects } from './components/Projects';
 import { SEO } from './components/SEO';
 import { SmoothScroll } from './components/SmoothScroll';
 import { usePortfolioData } from './hooks/usePortfolioData';
-import { soundEngine } from './lib/SoundEngine';
 
 function Portfolio() {
   const { personalInfo, projects, experiences, blogs, loading } = usePortfolioData();
 
-  // Initialize sound engine on first interaction
-  useEffect(() => {
-    const initAudio = () => {
-      soundEngine.init();
-      document.removeEventListener('click', initAudio);
-    };
-    document.addEventListener('click', initAudio);
-    return () => document.removeEventListener('click', initAudio);
-  }, []);
+
 
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {

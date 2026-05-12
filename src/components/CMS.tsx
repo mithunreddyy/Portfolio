@@ -33,6 +33,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { PERSONAL_INFO, PROJECTS, EXPERIENCES, BLOG_POSTS } from "../constants";
 import { supabase } from "../lib/supabase";
 import { BlogPost, Experience, PersonalInfo, Project } from "../types";
+import { formatDate, calculateReadTime } from "../lib/utils";
 
 const ADMIN_EMAIL = "mithunreddy1357@gmail.com";
 
@@ -143,7 +144,8 @@ export function CMS() {
         setBlogs(
           bgs.map((blog: any) => ({
             ...blog,
-            readTime: blog.read_time || blog.readTime || "",
+            date: formatDate(blog.date || blog.created_at),
+            readTime: calculateReadTime(blog.content, blog.excerpt),
           })),
         );
       }
@@ -243,7 +245,7 @@ export function CMS() {
         payload.published =
           typeof data.published === "boolean" ? data.published : true;
         payload.date = data.date || new Date().toISOString();
-        payload.read_time = data.readTime || data.read_time || "";
+        payload.read_time = calculateReadTime(data.content, data.excerpt);
       }
 
       payload.updated_at = new Date().toISOString();
@@ -1027,7 +1029,15 @@ function EditorDrawer({ isOpen, onClose, item, tab, onSave, loading }: any) {
                   <Field label="Category" value={formData.category} onChange={(v: string) => setFormData({ ...formData, category: v })} />
                   <div className="grid grid-cols-2 gap-6">
                     <Field label="Publish Date" value={formData.date} onChange={(v: string) => setFormData({ ...formData, date: v })} />
-                    <Field label="Est. Read Time" value={formData.readTime || ""} onChange={(v: string) => setFormData({ ...formData, readTime: v })} />
+                    <div className="space-y-2">
+                      <label className="block text-[11px] font-bold text-muted uppercase tracking-[0.15em] ml-1">
+                        Calculated Read Time
+                      </label>
+                      <div className="w-full bg-ink/[0.04] border border-line rounded-xl p-3.5 text-[14px] text-ink/50 font-mono shadow-inner flex items-center gap-2">
+                        <Clock size={14} />
+                        {calculateReadTime(formData.content, formData.excerpt)}
+                      </div>
+                    </div>
                   </div>
                 </>
               )}

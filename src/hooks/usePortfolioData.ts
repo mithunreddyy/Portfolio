@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { PERSONAL_INFO, PROJECTS, BLOG_POSTS, EXPERIENCES } from '../constants';
 import { BlogPost, Project, Experience, PersonalInfo } from '../types';
+import { formatDate, calculateReadTime } from '../lib/utils';
 
 export function usePortfolioData() {
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>(PERSONAL_INFO);
@@ -57,9 +58,19 @@ export function usePortfolioData() {
 
         // Merge Blogs: Only show PUBLISHED blogs (published !== false)
         if (Array.isArray(bgs)) {
-          const dbBlogs = bgs.filter(b => b.published !== false);
+          const dbBlogs = bgs.filter(b => b.published !== false).map(b => ({
+            ...b,
+            date: formatDate(b.date || b.created_at),
+            readTime: calculateReadTime(b.content, b.excerpt),
+          }));
           const combined = [...dbBlogs, ...BLOG_POSTS.filter(b => !dbBlogs.some(db => db.slug === b.slug))];
-          setBlogs(combined);
+          // Also format local blogs for consistency
+          const formattedCombined = combined.map(b => ({
+            ...b,
+            date: formatDate(b.date),
+            readTime: calculateReadTime(b.content, b.excerpt)
+          }));
+          setBlogs(formattedCombined);
         }
 
       } catch (error) {

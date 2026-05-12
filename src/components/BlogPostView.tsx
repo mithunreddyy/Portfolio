@@ -5,6 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import { BLOG_POSTS, PERSONAL_INFO } from "../constants";
 import { supabase } from "../lib/supabase";
 import { BlogPost } from "../types";
+import { formatDate, calculateReadTime } from "../lib/utils";
 import { SEO } from "./SEO";
 
 /* ─── Content parser ─── */
@@ -158,36 +159,7 @@ function RichText({ segments }: { segments: TextSegment[] }) {
   );
 }
 
-/** Convert "FEB 21, 2025" or ISO date to DD/MM/YY */
-const toShortDate = (dateStr: string): string => {
-  try {
-    const months: Record<string, string> = {
-      JAN: "01", FEB: "02", MAR: "03", APR: "04", MAY: "05", JUN: "06",
-      JUL: "07", AUG: "08", SEP: "09", OCT: "10", NOV: "11", DEC: "12",
-    };
-    const parts = dateStr.trim().split(/[\s,]+/);
-    if (parts.length >= 3 && months[parts[0].toUpperCase()]) {
-      const mm = months[parts[0].toUpperCase()];
-      const dd = parts[1].padStart(2, "0");
-      const yy = parts[2].slice(-2);
-      return `${dd}/${mm}/${yy}`;
-    }
-    const d = new Date(dateStr);
-    if (!isNaN(d.getTime())) {
-      const dd = String(d.getDate()).padStart(2, "0");
-      const mm = String(d.getMonth() + 1).padStart(2, "0");
-      const yy = String(d.getFullYear()).slice(-2);
-      return `${dd}/${mm}/${yy}`;
-    }
-  } catch { /* noop */ }
-  return dateStr;
-};
 
-/** Extract minutes from readTime string */
-const extractMinutes = (readTime: string): number => {
-  const n = parseInt((readTime || "").replace(/[^0-9]/g, ""), 10);
-  return isNaN(n) ? 2 : n;
-};
 
 /* ─── Main component ─── */
 
@@ -209,11 +181,23 @@ export function BlogPostView() {
           .single();
 
         if (data && !error) {
-          setPost(data as BlogPost);
+          setPost({
+            ...data,
+            date: formatDate(data.date || data.created_at),
+            readTime: calculateReadTime(data.content, data.excerpt),
+          } as BlogPost);
         } else {
           // Fallback to local constants
           const found = BLOG_POSTS.find((b: BlogPost) => b.slug === slug);
-          setPost(found || null);
+          if (found) {
+            setPost({
+              ...found,
+              date: formatDate(found.date),
+              readTime: calculateReadTime(found.content, found.excerpt)
+            });
+          } else {
+            setPost(null);
+          }
         }
       } catch (error) {
         console.error(
@@ -239,9 +223,18 @@ export function BlogPostView() {
           .eq("published", true)
           .order("date", { ascending: false });
         if (data && data.length > 0) {
+          const mappedData = data.map(b => ({
+            ...b,
+            date: formatDate(b.date || b.created_at),
+            readTime: calculateReadTime(b.content, b.excerpt),
+          }));
           const combined = [
-            ...data,
-            ...BLOG_POSTS.filter(b => !data.some((db: BlogPost) => db.slug === b.slug)),
+            ...mappedData,
+            ...BLOG_POSTS.filter(b => !mappedData.some((db: BlogPost) => db.slug === b.slug)).map(b => ({
+              ...b,
+              date: formatDate(b.date),
+              readTime: calculateReadTime(b.content, b.excerpt)
+            })),
           ] as BlogPost[];
           setAllBlogs(combined);
         }
@@ -296,7 +289,7 @@ export function BlogPostView() {
   const contentBlocks = post.content ? parseContent(post.content) : [];
   const allText = [post.excerpt, post.content].filter(Boolean).join(" ");
   const wordCount = allText.split(/\s+/).filter(Boolean).length;
-  const readMinutes = parseInt((post.readTime || "").replace(/[^0-9]/g, ""), 10) || Math.ceil(wordCount / 200);
+  const readMinutes = parseInt(post.readTime.split(" ")[0], 10);
   const excerptSegments = parseInline(post.excerpt || "");
 
   return (
@@ -466,14 +459,14 @@ export function BlogPostView() {
                     className="blogpost-more-row"
                   >
                     <span className="blogpost-more-date">
-                      {toShortDate(b.date)}
+                      {b.date}
                     </span>
                     <span className="blogpost-more-title">
                       {b.title.replace(/\n/g, " ")}
                     </span>
                     <span className="blogpost-more-time">
                       <Clock size={12} strokeWidth={1.5} />
-                      {extractMinutes(b.readTime)} m
+                      {b.readTime.split(" ")[0]} m
                     </span>
                   </Link>
                 ))}

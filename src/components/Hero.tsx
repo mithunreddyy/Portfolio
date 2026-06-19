@@ -73,7 +73,7 @@ export function Hero({ personalInfo }: { personalInfo: PersonalInfo }) {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
               </div>
-              <span className="text-[10px] sm:text-[11px] font-mono text-accent uppercase tracking-tight">Available for work</span>
+              <span className="text-[10px] sm:text-[11px] font-regular text-accent uppercase tracking-tight">Available for work</span>
             </div>
           </div>
 

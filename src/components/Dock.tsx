@@ -1,7 +1,6 @@
 import { AppWindow, Briefcase, Layers, Mail, MessageSquare, Moon, Sun, User } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
-import { getLenis } from './SmoothScroll';
 
 const dockItems = [
   { id: 'hero', icon: User, label: 'Profile' },
@@ -58,15 +57,8 @@ export function Dock() {
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
     if (!el) return;
-
-    const lenis = getLenis();
-    if (lenis) {
-      lenis.scrollTo(el, { offset: -20, duration: 1.0 });
-    } else {
-      // Fallback for mobile (no Lenis)
-      const top = el.getBoundingClientRect().top + window.scrollY - 20;
-      window.scrollTo({ top, behavior: 'smooth' });
-    }
+    const top = el.getBoundingClientRect().top + window.scrollY - 20;
+    window.scrollTo({ top, behavior: 'smooth' });
   };
 
   return (

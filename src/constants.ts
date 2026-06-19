@@ -14,28 +14,29 @@ export const PERSONAL_INFO = {
 
 export const EXPERIENCES: Experience[] = [
   {
-    id: "zensar",
+    id: "pentagram",
     role: "Full-Stack Engineer",
+    company: "Pentagram InfoTech",
+    location: "Hyderabad, India",
+    period: "2024 — Present",
+    highlights: [
+      "Architected a modular microservices ecosystem handling authentication, order management, analytics, and workflow automation — led a team of 6 across Frontend, Backend, and DevOps within Agile sprints.",
+      "Built highly optimized RESTful APIs processing millions of monthly transactions at sub-200ms latency using PostgreSQL tuning, materialized views, connection pooling, and Redis caching layers.",
+      "Developed advanced data pipelines using Python, SQL, and PySpark to automate BI workflows, cutting 20+ hours/week of manual effort and enabling real-time reporting dashboards.",
+      "Implemented IaC with Terraform and Docker-based CI/CD via GitHub Actions, delivering 20+ major releases with zero critical incidents and 99.95% platform availability."
+    ]
+  },
+  {
+    id: "zensar",
+    role: "Software Engineer",
     company: "Zensar Technologies",
     location: "Hyderabad, India",
     period: "2022 — 2023",
     highlights: [
-      "Engineered high-performance web architectures using React.js, TypeScript, and Next.js. Implemented SSR to reduce TTI by 40%.",
-      "Architected scalable backend microservices using Node.js, Express, and Python. Transitioned to event-driven architectures using AWS SQS/SNS.",
-      "Optimized PostgreSQL database operations through table partitioning and B-tree/GIN indexing, reducing latency from 800ms to <200ms.",
-      "Designed distributed caching layers using Redis and AWS CloudFront, decreasing direct database read loads by 60%."
-    ]
-  },
-  {
-    id: "sagiam",
-    role: "Frontend Engineer Intern",
-    company: "Sagiam",
-    location: "Hyderabad, India",
-    period: "2021 — 2022",
-    highlights: [
-      "Architected reusable, type-safe UI component libraries using React and TypeScript for internal dashboards.",
-      "Optimized client-side rendering performance by implementing code splitting, lazy loading, and component memoization.",
-      "Developed backend API endpoints using Node.js to aggregate CRM and financial data."
+      "Led the migration from monolithic services to event-driven microservices using Node.js, Express, Python, AWS SQS/SNS — enabling resilient high-volume transaction processing with near-zero message failures.",
+      "Re-engineered PostgreSQL infrastructure with advanced indexing, query optimization, partitioning, and materialized views, reducing API response times from 800ms to under 200ms.",
+      "Designed distributed caching layers with Redis and AWS CloudFront, decreasing database load by 60% and powering real-time analytics dashboards at sub-100ms response times.",
+      "Built cloud-native infrastructure on AWS (EC2, S3, RDS, Lambda, CloudFront) with Terraform IaC and automated CI/CD pipelines via Docker and GitHub Actions, achieving 99.99% uptime."
     ]
   }
 ];

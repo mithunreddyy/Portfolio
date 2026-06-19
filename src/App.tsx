@@ -16,6 +16,7 @@ import { usePortfolioData } from './hooks/usePortfolioData';
 // Lazy load heavy components
 const CMS = lazy(() => import('./components/CMS').then(module => ({ default: module.CMS })));
 const BlogPostView = lazy(() => import('./components/BlogPostView').then(module => ({ default: module.BlogPostView })));
+const NotFound = lazy(() => import('./components/NotFound').then(module => ({ default: module.NotFound })));
 
 function Portfolio() {
   const { personalInfo, projects, experiences, blogs, loading } = usePortfolioData();
@@ -82,6 +83,7 @@ export default function App() {
             <Route path="/" element={<Portfolio />} />
             <Route path="/cms" element={<CMS />} />
             <Route path="/blog/:slug" element={<BlogPostView />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
       </div>

@@ -1,6 +1,7 @@
 import { AppWindow, Briefcase, Layers, Mail, MessageSquare, Moon, Sun, User } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
+import { getLenis } from './SmoothScroll';
 
 const dockItems = [
   { id: 'hero', icon: User, label: 'Profile' },
@@ -13,11 +14,11 @@ const dockItems = [
 
 export function Dock() {
   const [activeSection, setActiveSection] = useState('hero');
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
-    const initialTheme = savedTheme || 'light';
+    const initialTheme = savedTheme || 'dark';
     setTheme(initialTheme);
     document.documentElement.setAttribute('data-theme', initialTheme);
   }, []);
@@ -56,8 +57,14 @@ export function Dock() {
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
-    if (el) {
-      const top = el.getBoundingClientRect().top - document.body.getBoundingClientRect().top - 20;
+    if (!el) return;
+
+    const lenis = getLenis();
+    if (lenis) {
+      lenis.scrollTo(el, { offset: -20, duration: 1.0 });
+    } else {
+      // Fallback for mobile (no Lenis)
+      const top = el.getBoundingClientRect().top + window.scrollY - 20;
       window.scrollTo({ top, behavior: 'smooth' });
     }
   };

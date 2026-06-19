@@ -235,7 +235,7 @@ export function CMS() {
         payload.highlights = Array.isArray(data.highlights)
           ? data.highlights
           : [data.highlights];
-        payload.order_index = data.order_index || 0;
+        payload.order_index = data.order_index ?? 0;
       } else if (table === "blogs") {
         payload.title = data.title;
         payload.slug = data.slug;
@@ -250,7 +250,8 @@ export function CMS() {
 
       payload.updated_at = new Date().toISOString();
 
-      const { error } = await supabase.from(table).upsert(payload);
+      // Use upsert with onConflict to update existing records instead of creating duplicates
+      const { error } = await supabase.from(table).upsert(payload, { onConflict: 'id' });
       if (error) throw error;
 
       showToast(`Successfully saved ${table.slice(0, -1)}.`, "success");
@@ -280,16 +281,22 @@ export function CMS() {
         if (error) throw new Error("Projects Migration: " + error.message);
       }
 
-      // 2. Experiences
-      const newExps = EXPERIENCES.filter(e => !experiences.some(dbE => dbE.role === e.role && dbE.company === e.company));
-      if (newExps.length > 0) {
-        const expPayloads = newExps.map((e, index) => ({
+      // 2. Experiences — sync by company name (id is UUID, can't use string ids)
+      if (EXPERIENCES.length > 0) {
+        // Delete existing records that match by company name to prevent duplicates
+        for (const exp of EXPERIENCES) {
+          await supabase.from('experience').delete().eq('company', exp.company);
+        }
+        // Insert fresh records from constants
+        const expPayloads = EXPERIENCES.map((e, index) => ({
           role: e.role, company: e.company, period: e.period, location: e.location,
-          highlights: e.highlights, order_index: (e as any).order_index || (experiences.length + index)
+          highlights: e.highlights, order_index: index,
+          updated_at: new Date().toISOString()
         }));
         const { error } = await supabase.from('experience').insert(expPayloads);
         if (error) throw new Error("Experiences Migration: " + error.message);
       }
+      const newExps = EXPERIENCES;
 
       // 3. Blogs
       const newBlogs = BLOG_POSTS.filter(b => !blogs.some(dbB => dbB.slug === b.slug));

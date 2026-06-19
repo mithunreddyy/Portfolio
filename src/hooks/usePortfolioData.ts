@@ -48,14 +48,23 @@ export function usePortfolioData() {
           setProjects(combined.sort((a, b) => (a.order_index || 0) - (b.order_index || 0)));
         }
 
-        // Merge Experiences
+        // Merge Experiences: Match by company name (Supabase id is UUID, constants id is string).
+        // Supabase records take priority for matching companies (CMS edits).
+        // Constants without a Supabase match are used as fallback.
         if (Array.isArray(exps)) {
-          const dbExps = exps.map(e => ({
-            ...e,
-            highlights: Array.isArray(e.highlights) ? e.highlights : [e.highlights],
-          }));
-          const combined = [...dbExps, ...EXPERIENCES.filter(e => !dbExps.some(de => de.role === e.role && de.company === e.company))];
-          setExperiences(combined.sort((a, b) => (a.order_index || 0) - (b.order_index || 0)));
+          const dbMap = new Map<string, any>();
+          for (const e of exps) {
+            dbMap.set(e.company, {
+              ...e,
+              highlights: Array.isArray(e.highlights) ? e.highlights : [e.highlights],
+            });
+          }
+          // For each constants entry: use Supabase version if it exists, otherwise use constants
+          const merged = EXPERIENCES.map(constExp => {
+            const dbVersion = dbMap.get(constExp.company);
+            return dbVersion || constExp;
+          });
+          setExperiences(merged);
         }
 
         // Merge Blogs: Only show PUBLISHED blogs (published !== false)

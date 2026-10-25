@@ -34,6 +34,28 @@ export function formatDate(dateStr: string): string {
 }
 
 /**
+ * Scrolls to a page section, leaving a small gap below the top edge
+ */
+export function scrollToSection(id: string) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.scrollY - 20;
+  window.scrollTo({ top, behavior: 'smooth' });
+}
+
+/**
+ * Shows a URL as host plus path, e.g. "github.com/owner/repo"
+ */
+export function displayUrl(url: string): string {
+  try {
+    const u = new URL(url);
+    return `${u.host}${u.pathname.replace(/\/$/, '')}`;
+  } catch {
+    return url;
+  }
+}
+
+/**
  * Calculates read time in minutes based on content
  */
 export function calculateReadTime(content: string = "", excerpt: string = ""): string {

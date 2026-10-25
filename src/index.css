@@ -16,9 +16,9 @@
 }
 
 :root[data-theme='light'] {
-  --color-bg: #f8f8f8;
-  --color-ink: #111111;
-  --color-muted: #666666;
+  --color-bg: #f6f7f9;
+  --color-ink: #15171a;
+  --color-muted: #636872;
   --color-line: rgba(0, 0, 0, 0.08);
   --color-accent: #2563EB;
   --color-blog-text: rgba(17, 17, 17, 0.65);
@@ -68,6 +68,11 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
   .min-h-screen {
     min-height: 100dvh;
   }
@@ -104,9 +109,7 @@
   }
 }
 
-/* ══════════════════════════════════════════════
-   BlogPostView — Editorial Reader Layout
-   ══════════════════════════════════════════════ */
+/* Blog post reader */
 
 .blogpost-root {
   min-height: 100dvh;
@@ -146,7 +149,7 @@
   margin: 0 auto;
 }
 
-/* ─── Back Button ─── */
+/* Back Button */
 .blogpost-back {
   display: inline-flex;
   align-items: center;
@@ -166,7 +169,7 @@
   color: var(--color-ink);
 }
 
-/* ─── Meta Row ─── */
+/* Meta Row */
 .blogpost-meta-row {
   display: flex;
   align-items: center;
@@ -202,7 +205,7 @@
   flex-shrink: 0;
 }
 
-/* ─── Title ─── */
+/* Title */
 .blogpost-title {
   font-family: var(--font-sans);
   font-size: 2.25rem;
@@ -225,7 +228,7 @@
   }
 }
 
-/* ─── Lead / excerpt ─── */
+/* Lead / excerpt */
 .blogpost-lead {
   font-size: 1.05rem;
   line-height: 1.85;
@@ -240,14 +243,78 @@
   }
 }
 
-/* ─── Article content ─── */
+/* Article content */
 .blogpost-article {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
 }
 
-/* ─── Heading (h2) ─── */
+/* Top bar (back + share) */
+.blogpost-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.blogpost-share {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--color-blog-text);
+  transition: color 0.2s ease;
+}
+
+.blogpost-share:hover {
+  color: var(--color-ink);
+}
+
+/* Table of contents */
+.blogpost-toc {
+  margin: 0 0 2.25rem;
+  padding: 1rem 1.25rem;
+  border-radius: 1rem;
+  background-color: var(--color-blog-bg-hover);
+}
+
+.blogpost-toc-title {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin-bottom: 0.6rem;
+}
+
+.blogpost-toc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.blogpost-toc-link {
+  font-size: 0.95rem;
+  color: var(--color-blog-text);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.blogpost-toc-link:hover {
+  color: var(--color-ink);
+  text-decoration: underline;
+}
+
+/* Heading (h2) */
 .blogpost-h2 {
   font-family: var(--font-sans);
   font-size: 1.3rem;
@@ -255,6 +322,7 @@
   line-height: 1.35;
   color: var(--color-ink);
   margin-top: 0.75rem;
+  scroll-margin-top: 6rem;
 }
 
 @media (min-width: 640px) {
@@ -263,7 +331,7 @@
   }
 }
 
-/* ─── Paragraph ─── */
+/* Paragraph */
 .blogpost-paragraph {
   font-size: 1.02rem;
   line-height: 1.9;
@@ -283,7 +351,7 @@
   color: var(--color-ink);
 }
 
-/* ─── Bullet list ─── */
+/* Bullet list */
 .blogpost-ul {
   list-style: none;
   padding: 0;
@@ -319,7 +387,7 @@
   color: var(--color-ink);
 }
 
-/* ─── Ordered list ─── */
+/* Ordered list */
 .blogpost-ol {
   list-style: none;
   padding: 0;
@@ -356,7 +424,7 @@
   color: var(--color-ink);
 }
 
-/* ─── Sub-bullets inside ordered list ─── */
+/* Sub-bullets inside ordered list */
 .blogpost-sub-ul {
   list-style: none;
   padding: 0;
@@ -387,7 +455,7 @@
   color: var(--color-ink);
 }
 
-/* ─── 404 states ─── */
+/* 404 states */
 .blogpost-404-title {
   font-size: 1.35rem;
   font-weight: 700;
@@ -408,7 +476,7 @@
   text-decoration: underline;
 }
 
-/* ─── More / Recommended posts ─── */
+/* More / Recommended posts */
 .blogpost-more {
   margin-top: 2.5rem;
   padding-top: 1.75rem;
@@ -492,7 +560,7 @@
   flex-shrink: 0;
 }
 
-/* ─── Blog footer ─── */
+/* Blog footer */
 .blogpost-footer {
   margin-top: 2rem;
   padding-top: 1.25rem;

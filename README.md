@@ -1,98 +1,48 @@
-# Mithun Reddy — Design-Minded Software Engineer
+# Mithun Reddy
 
-A premium, minimalist developer portfolio focused on high-end editorial aesthetics, smooth interactions, and a production-grade CMS infrastructure. Built with a focus on typography, motion, and technical depth.
+Personal portfolio and blog. Project case studies, an editorial blog, and an availability status. All content is Markdown in `content/`, bundled at build time. There is no database.
 
-![Portfolio Preview](public/preview-dark.png) 
-*(Note: Ensure you have a preview image or remove this line)*
+## Stack
 
-## 🏛️ Architecture & Philosophy
+- React 19, Vite, TypeScript
+- Tailwind CSS v4
+- Motion for animation
+- Hanken Grotesk for text, Geist Mono for metadata
+- Lucide React for icons
+- Open-Meteo for the temperature shown in the blog reader
+- Web3Forms for the contact form
 
-This portfolio is designed with an **Editorial-First** approach, treating code documentation and projects as high-fidelity case studies. It balances the precision of engineering with the fluidity of design.
+## Editing content
 
-- **Minimalist Aesthetic**: No borders, high-contrast typography, and significant whitespace for a clean reading experience.
-- **Interactive Depth**: Uses `Framer Motion` to create a tactile UI with scattered project cards, 3D-like hover effects, and immersive modals.
-- **Dynamic Infrastructure**: Powered by a dual-source strategy—Supabase for real-time content management and local constants for zero-latency fallbacks.
+| File | What it holds |
+|---|---|
+| `content/profile.md` | Name, role, links, resume path. The body is the intro summary. |
+| `content/skills.md` | One `##` heading per category, one bullet per skill. |
+| `content/experience/*.md` | One file per role. Bullets are the highlights. |
+| `content/projects/*.md` | One file per project. Bullets are the description. |
+| `content/blog/<slug>.md` | One file per post. Set `published: false` to hide it. |
 
-## 🚀 Technical Stack
+The number prefix on experience and project filenames (`01-`, `02-`) sets their order. Blog posts sort by date.
 
-### Core
-- **Framework**: [React 19](https://react.dev/) + [Vite](https://vitejs.dev/)
-- **Language**: [TypeScript](https://www.typescriptlang.org/) (Strictly typed)
-- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
-- **Animations**: [Motion](https://motion.dev/) (Framer Motion)
+## Run it
 
-### Backend & CMS
-- **Database**: [Supabase](https://supabase.com/) (PostgreSQL)
-- **CMS Logic**: Real-time synchronization for Blogs, Projects, and Experiences.
-- **Weather API**: [Open-Meteo](https://open-meteo.com/) for dynamic location-based temperature data.
-
-### Design System
-- **Typography**: 
-  - Sans: `Hanken Grotesk` (Editorial headings)
-  - UI: `Inter` (Functional text)
-  - Mono: `Geist Mono` / `JetBrains Mono` (Code & Metadata)
-- **Iconography**: [Lucide React](https://lucide.dev/) (Thin stroke variants)
-
-## ✨ Premium Features
-
-### 1. Immersive Project Case Studies
-The project section features a unique "Scattered Card" layout. Clicking a card triggers a high-fidelity modal that includes:
-- **Terminal Visuals**: A mock `runtime.sh` interface showcasing build steps.
-- **Infrastructure Cards**: Structured breakdown of core project architecture.
-- **Dynamic Shadows**: Theme-aware "ambient glows" that adapt to Light and Dark modes.
-
-### 2. Editorial Writing System
-A custom-built blog engine that supports:
-- **Rich Text Parsing**: Dynamic markdown-like parsing for bolding, bullet points, and high-impact quotes.
-- **Reading Progress**: Integrated read-time calculation and date formatting.
-- **Responsive Layouts**: Optimized for long-form reading on all screen sizes.
-
-### 3. Verification & Live Status
-- **Verified Badge**: A custom-animated verification seal next to the name.
-- **Live Availability**: Pulsing status indicators for current availability.
-- **Real-time Weather**: Integrated location-aware temperature and time tracking in the footer.
-
-## 🛠️ Installation & Setup
-
-### Prerequisites
-- Node.js 18.x or higher
-- Supabase Account (for CMS)
-
-### Environment Variables
-Create a `.env` file in the root:
-
-```env
-VITE_SUPABASE_URL=your_supabase_project_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
-
-### Commands
 ```bash
-# Install dependencies
 npm install
-
-# Start development server
-npm run dev
-
-# Build for production
+npm run dev     # http://localhost:3000
 npm run build
+npm run lint    # type check
 ```
 
-## 📂 Project Structure
+Copy `.env.example` to `.env` and set `VITE_WEB3FORMS_ACCESS_KEY` to enable the contact form.
+
+## Layout
 
 ```text
+content/        Markdown source for everything on the site
 src/
-├── components/         # Premium UI Components
-│   ├── BlogPostView/   # Editorial reading interface
-│   ├── Projects/       # Scattered card & Modal logic
-│   ├── CMS/            # Admin management interface
-│   └── ...
-├── hooks/              # Custom logic (usePortfolioData, useTheme)
-├── lib/                # API Clients (Supabase, Weather)
-├── constants.ts        # Content source of truth
-└── index.css           # Global Design Tokens & Tailwind v4
+  components/   Sections and views
+  hooks/        usePortfolioData, useTheme
+  lib/          content.ts (Markdown loader), utils.ts
+  index.css     Theme tokens and blog styles
+DESIGN.md       Design direction
 ```
-
----
-
-Developed with ✻ by **Mithun Reddy**

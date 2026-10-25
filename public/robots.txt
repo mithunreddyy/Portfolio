@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /cms
 
 Sitemap: https://mithunreddy.dev/sitemap.xml

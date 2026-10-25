@@ -36,7 +36,7 @@ export function ExperienceSection({ experiences }: { experiences: Experience[] }
       <div className="mb-2.5 sm:mb-3">
         <h2 className="text-[15px] sm:text-[17px] font-semibold text-ink">Experience</h2>
         <p className="text-[16px] sm:text-[18px] leading-[1.75] text-muted/70 font-medium max-w-xl">
-          Throughout my career, I've worked on various projects, from building scalable systems to designing user-friendly interfaces.
+          Two backend-heavy roles so far: microservices, PostgreSQL performance, and data pipelines.
         </p>
       </div>
 
@@ -75,7 +75,6 @@ export function ExperienceSection({ experiences }: { experiences: Experience[] }
   );
 }
 
-/* ─── Stack — Flat colored icons, as-is ─── */
 export function Skills() {
   return (
     <section id="skills" className="section-container pt-3 sm:pt-4 pb-4 sm:pb-6">

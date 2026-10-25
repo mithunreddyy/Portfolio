@@ -1,14 +1,11 @@
-import { Clock, CloudSun, CornerDownLeft, FileText, MapPin } from "lucide-react";
-import { motion } from "motion/react";
+import { Check, Clock, CloudSun, CornerDownLeft, FileText, Link as LinkIcon, MapPin } from "lucide-react";
+import { motion, useScroll, useSpring } from "motion/react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { BLOG_POSTS, PERSONAL_INFO } from "../constants";
-import { supabase } from "../lib/supabase";
-import { BlogPost } from "../types";
-import { formatDate, calculateReadTime } from "../lib/utils";
 import { SEO } from "./SEO";
 
-/* ─── Content parser ─── */
+/* Content parser */
 
 type ContentBlock =
   | { type: "heading"; text: string }
@@ -73,7 +70,7 @@ const parseContent = (content: string): ContentBlock[] => {
     const line = rawLine.trim();
 
     if (!line) {
-      // Don't flush numbered list blocks on empty lines — they may have sub-bullets
+      // Don't flush numbered list blocks on empty lines, they may have sub-bullets
       if (currentBlock?.type !== "list" || currentBlock.style !== "number") {
         flush();
       } else {
@@ -141,7 +138,7 @@ const parseContent = (content: string): ContentBlock[] => {
   return blocks;
 };
 
-/* ─── Inline text renderer ─── */
+/* Inline text renderer */
 
 function RichText({ segments }: { segments: TextSegment[] }) {
   return (
@@ -161,87 +158,24 @@ function RichText({ segments }: { segments: TextSegment[] }) {
 
 
 
-/* ─── Main component ─── */
+/* Main component */
 
 export function BlogPostView() {
   const { slug } = useParams();
-  const [post, setPost] = useState<BlogPost | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [allBlogs, setAllBlogs] = useState<BlogPost[]>(BLOG_POSTS);
+  const post = BLOG_POSTS.find(b => b.slug === slug) ?? null;
+  const allBlogs = BLOG_POSTS;
   const [weather, setWeather] = useState<{ temp: number } | null>(null);
+  const [linkCopied, setLinkCopied] = useState(false);
+
+  /* Reading progress across the whole page */
+  const { scrollYProgress } = useScroll();
+  const readProgress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, restDelta: 0.001 });
 
   useEffect(() => {
-    const fetchPost = async () => {
-      setLoading(true);
-      try {
-        const { data, error } = await supabase
-          .from("blogs")
-          .select("*")
-          .eq("slug", slug)
-          .single();
-
-        if (data && !error) {
-          setPost({
-            ...data,
-            date: formatDate(data.date || data.created_at),
-            readTime: calculateReadTime(data.content, data.excerpt),
-          } as BlogPost);
-        } else {
-          // Fallback to local constants
-          const found = BLOG_POSTS.find((b: BlogPost) => b.slug === slug);
-          if (found) {
-            setPost({
-              ...found,
-              date: formatDate(found.date),
-              readTime: calculateReadTime(found.content, found.excerpt)
-            });
-          } else {
-            setPost(null);
-          }
-        }
-      } catch (error) {
-        console.error(
-          "Supabase fetch error, falling back to local constants",
-          error,
-        );
-        const found = BLOG_POSTS.find((b: BlogPost) => b.slug === slug);
-        setPost(found || null);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPost();
-  }, [slug]);
-
-  /* Fetch all blogs for "More" section */
-  useEffect(() => {
-    const fetchAllBlogs = async () => {
-      try {
-        const { data } = await supabase
-          .from("blogs")
-          .select("*")
-          .eq("published", true)
-          .order("date", { ascending: false });
-        if (data && data.length > 0) {
-          const mappedData = data.map(b => ({
-            ...b,
-            date: formatDate(b.date || b.created_at),
-            readTime: calculateReadTime(b.content, b.excerpt),
-          }));
-          const combined = [
-            ...mappedData,
-            ...BLOG_POSTS.filter(b => !mappedData.some((db: BlogPost) => db.slug === b.slug)).map(b => ({
-              ...b,
-              date: formatDate(b.date),
-              readTime: calculateReadTime(b.content, b.excerpt)
-            })),
-          ] as BlogPost[];
-          setAllBlogs(combined);
-        }
-      } catch { /* use fallback */ }
-    };
-    fetchAllBlogs();
-  }, []);
+    if (!linkCopied) return;
+    const timer = setTimeout(() => setLinkCopied(false), 2000);
+    return () => clearTimeout(timer);
+  }, [linkCopied]);
 
   /* Fetch weather for Hyderabad */
   useEffect(() => {
@@ -259,20 +193,7 @@ export function BlogPostView() {
     fetchWeather();
   }, []);
 
-  /* ─── Loading state ─── */
-  if (loading) {
-    return (
-      <div className="blogpost-root blogpost-center">
-        <motion.div
-          animate={{ opacity: [0.3, 1, 0.3], scale: [0.97, 1.03, 0.97] }}
-          transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}
-          className="blogpost-loader"
-        />
-      </div>
-    );
-  }
-
-  /* ─── 404 state ─── */
+  /* 404 state */
   if (!post) {
     return (
       <div className="blogpost-root blogpost-center">
@@ -291,6 +212,18 @@ export function BlogPostView() {
   const wordCount = allText.split(/\s+/).filter(Boolean).length;
   const readMinutes = parseInt(post.readTime.split(" ")[0], 10);
   const excerptSegments = parseInline(post.excerpt || "");
+  const headings = contentBlocks.flatMap((block, index) =>
+    block.type === "heading" ? [{ text: block.text, id: `section-${index}` }] : [],
+  );
+
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setLinkCopied(true);
+    } catch {
+      // Clipboard blocked: leave the label unchanged rather than claim a copy
+    }
+  };
 
   return (
     <motion.div
@@ -317,14 +250,24 @@ export function BlogPostView() {
         }}
       />
 
-      <div className="blogpost-container">
-        {/* ─── Back button ─── */}
-        <Link to="/" className="blogpost-back" id="blog-back-button">
-          <CornerDownLeft size={14} strokeWidth={1.5} />
-          <span>BACK</span>
-        </Link>
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-[2px] bg-accent origin-left z-50"
+        style={{ scaleX: readProgress }}
+        aria-hidden="true"
+      />
 
-        {/* ─── Meta row ─── */}
+      <div className="blogpost-container">
+        <div className="blogpost-topbar">
+          <Link to="/" className="blogpost-back" id="blog-back-button">
+            <CornerDownLeft size={14} strokeWidth={1.5} />
+            <span>BACK</span>
+          </Link>
+          <button type="button" onClick={copyLink} className="blogpost-share">
+            {linkCopied ? <Check size={14} strokeWidth={1.5} /> : <LinkIcon size={14} strokeWidth={1.5} />}
+            <span>{linkCopied ? "Link copied" : "Copy link"}</span>
+          </button>
+        </div>
+
         <div className="blogpost-meta-row">
           <span className="blogpost-meta-date">{post.date}</span>
           <div className="blogpost-meta-stats">
@@ -339,7 +282,6 @@ export function BlogPostView() {
           </div>
         </div>
 
-        {/* ─── Title ─── */}
         <motion.h1
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -354,7 +296,6 @@ export function BlogPostView() {
           ))}
         </motion.h1>
 
-        {/* ─── Intro paragraph (excerpt as lead) ─── */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -364,7 +305,21 @@ export function BlogPostView() {
           <RichText segments={excerptSegments} />
         </motion.div>
 
-        {/* ─── Article content ─── */}
+        {headings.length >= 2 && (
+          <nav aria-label="On this page" className="blogpost-toc">
+            <span className="blogpost-toc-title">On this page</span>
+            <ol className="blogpost-toc-list">
+              {headings.map((heading) => (
+                <li key={heading.id}>
+                  <a href={`#${heading.id}`} className="blogpost-toc-link">
+                    {heading.text}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
+
         <motion.article
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -375,7 +330,7 @@ export function BlogPostView() {
             contentBlocks.map((block, index) => {
               if (block.type === "heading") {
                 return (
-                  <h2 key={index} className="blogpost-h2">
+                  <h2 key={index} id={`section-${index}`} className="blogpost-h2">
                     {block.text}:
                   </h2>
                 );
@@ -389,7 +344,7 @@ export function BlogPostView() {
                 );
               }
 
-              /* ─── Lists ─── */
+              /* Lists */
               if (block.style === "number") {
                 return (
                   <ol key={index} className="blogpost-ol">
@@ -439,7 +394,6 @@ export function BlogPostView() {
           )}
         </motion.article>
 
-        {/* ─── More posts ─── */}
         {(() => {
           const otherPosts = allBlogs.filter(b => b.slug !== slug);
           if (otherPosts.length === 0) return null;
@@ -475,7 +429,6 @@ export function BlogPostView() {
           );
         })()}
 
-        {/* ─── Footer ─── */}
         <footer className="blogpost-footer">
           <div className="blogpost-footer-meta">
             <span className="blogpost-footer-location">

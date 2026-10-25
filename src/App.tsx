@@ -1,4 +1,4 @@
-import { motion, useScroll, useSpring } from 'motion/react';
+import { MotionConfig, motion, useScroll, useSpring } from 'motion/react';
 import { useEffect, useState, Suspense, lazy } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Blog } from './components/Blog';
@@ -10,16 +10,14 @@ import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { Projects } from './components/Projects';
 import { SEO } from './components/SEO';
-import { SmoothScroll } from './components/SmoothScroll';
 import { usePortfolioData } from './hooks/usePortfolioData';
 
 // Lazy load heavy components
-const CMS = lazy(() => import('./components/CMS').then(module => ({ default: module.CMS })));
 const BlogPostView = lazy(() => import('./components/BlogPostView').then(module => ({ default: module.BlogPostView })));
 const NotFound = lazy(() => import('./components/NotFound').then(module => ({ default: module.NotFound })));
 
 function Portfolio() {
-  const { personalInfo, projects, experiences, blogs, loading } = usePortfolioData();
+  const { personalInfo, projects, experiences, blogs } = usePortfolioData();
 
 
 
@@ -30,20 +28,11 @@ function Portfolio() {
     restDelta: 0.001
   });
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-bg flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-accent/20 border-t-accent rounded-full animate-spin" />
-      </div>
-    );
-  }
-
   return (
     <div className="relative font-sans">
 
       <SEO />
-      <SmoothScroll />
-      <CommandPalette />
+      <CommandPalette personalInfo={personalInfo} blogs={blogs} />
      
 
       <motion.div
@@ -76,17 +65,19 @@ function Portfolio() {
 
 export default function App() {
   return (
-    <Router>
-      <div className="min-h-screen bg-bg text-ink relative selection:bg-accent/30 selection:text-ink">
-        <Suspense fallback={<div className="min-h-screen bg-bg flex items-center justify-center"><div className="w-8 h-8 border-2 border-accent/20 border-t-accent rounded-full animate-spin" /></div>}>
-          <Routes>
-            <Route path="/" element={<Portfolio />} />
-            <Route path="/cms" element={<CMS />} />
-            <Route path="/blog/:slug" element={<BlogPostView />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-      </div>
-    </Router>
+    // "user" honors the OS reduced-motion setting for every Motion animation
+    <MotionConfig reducedMotion="user">
+      <Router>
+        <div className="min-h-screen bg-bg text-ink relative selection:bg-accent/30 selection:text-ink">
+          <Suspense fallback={<div className="min-h-screen bg-bg flex items-center justify-center"><div className="w-8 h-8 border-2 border-accent/20 border-t-accent rounded-full animate-spin" /></div>}>
+            <Routes>
+              <Route path="/" element={<Portfolio />} />
+              <Route path="/blog/:slug" element={<BlogPostView />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </div>
+      </Router>
+    </MotionConfig>
   );
 }

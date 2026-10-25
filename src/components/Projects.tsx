@@ -1,7 +1,10 @@
-import { ArrowUpRight, ExternalLink, Github, X } from 'lucide-react';
+import { ArrowUpRight, ExternalLink, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useEffect, useState } from 'react';
 import { Project } from '../types';
+
+const cardLinkClass =
+  'inline-flex items-center gap-1 min-h-[44px] text-[15px] font-medium text-ink underline decoration-ink/20 underline-offset-4 hover:decoration-ink transition-colors';
 
 export function Projects({ projects }: { projects: Project[] }) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
@@ -58,7 +61,7 @@ export function Projects({ projects }: { projects: Project[] }) {
                 onClick={() => setSelectedProject(project)}
                 className="cursor-pointer group active:scale-[0.98] transition-transform will-change-transform"
               >
-                <div className="bg-bg rounded-lg shadow-lg dark:shadow-[0_30px_60px_-15px_rgba(255,255,255,0.05)] overflow-hidden border border-ink/[0.1]">
+                <motion.div layoutId={`card-${project.id}`} className="bg-bg rounded-lg shadow-lg dark:shadow-[0_30px_60px_-15px_rgba(255,255,255,0.05)] overflow-hidden border border-ink/[0.1]">
                   <div className="h-7 bg-ink/[0.03] flex items-center px-3 gap-1">
                     <div className="w-1.5 h-1.5 rounded-full bg-red-500/20 border border-red-500/30" />
                     <div className="w-1.5 h-1.5 rounded-full bg-amber-500/20 border border-amber-500/30" />
@@ -81,7 +84,7 @@ export function Projects({ projects }: { projects: Project[] }) {
                       </div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               </motion.div>
             ))}
           </div>
@@ -90,7 +93,6 @@ export function Projects({ projects }: { projects: Project[] }) {
             <div className="relative w-full h-full flex items-center justify-center">
               {projects.map((project, index) => {
                 const style = cardStyles[index % cardStyles.length];
-                // Responsive offset calculation
                 const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
                 const currentOffset = isTablet ? style.mdX * 0.8 : style.mdX; // Tighter spread on tablet
                 
@@ -113,7 +115,7 @@ export function Projects({ projects }: { projects: Project[] }) {
                     className="absolute cursor-pointer group will-change-transform"
                     style={{ zIndex: style.zIndex }}
                   >
-                    <div className="bg-bg rounded-2xl shadow-xl group-hover:shadow-2xl dark:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.05)] dark:group-hover:shadow-[0_30px_60px_-15px_rgba(255,255,255,0.08)] overflow-hidden w-[280px] md:w-[300px] lg:w-[320px] aspect-[4/3] flex flex-col transition-all duration-500 border border-ink/[0.05]">
+                    <motion.div layoutId={`card-${project.id}`} className="bg-bg rounded-2xl shadow-xl group-hover:shadow-2xl dark:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.05)] dark:group-hover:shadow-[0_30px_60px_-15px_rgba(255,255,255,0.08)] overflow-hidden w-[280px] md:w-[300px] lg:w-[320px] aspect-[4/3] flex flex-col transition-shadow duration-500 border border-ink/[0.05]">
                       <div className="h-7 bg-ink/[0.03] flex items-center px-3 gap-1 border-b border-ink/[0.02]">
                         <div className="w-1.5 h-1.5 rounded-full bg-red-500/20 border border-red-500/30" />
                         <div className="w-1.5 h-1.5 rounded-full bg-amber-500/20 border border-amber-500/30" />
@@ -136,7 +138,7 @@ export function Projects({ projects }: { projects: Project[] }) {
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
                   </motion.div>
                 );
               })}
@@ -147,213 +149,82 @@ export function Projects({ projects }: { projects: Project[] }) {
 
       <AnimatePresence>
         {selectedProject && (
-          <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 md:p-8 lg:p-12 overflow-hidden">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedProject(null)}
-              className="absolute inset-0 bg-bg/80 backdrop-blur-2xl"
+              className="absolute inset-0 bg-bg/60"
             />
-            
+
             <motion.div
-              layoutId={selectedProject.id}
-              initial={{ opacity: 0, scale: 0.9, y: isMobile ? 100 : 0 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: isMobile ? 100 : 0 }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="bg-bg w-full max-w-4xl max-h-[96dvh] sm:max-h-[85vh] overflow-hidden rounded-t-[24px] sm:rounded-[24px] border border-ink/10 shadow-[0_0_100px_rgba(0,0,0,0.5)] relative z-10 flex flex-col"
+              layoutId={`card-${selectedProject.id}`}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="project-dialog-title"
+              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+              className="relative z-10 w-full max-w-[560px] max-h-[85dvh] overflow-y-auto bg-bg rounded-[24px] border border-ink/10"
             >
-              {/* Decorative Background Glow */}
-              <div className="absolute top-0 left-1/4 w-1/2 h-1/2 bg-accent/5 blur-[120px] pointer-events-none" />
-
-              {/* Header / Top Bar */}
-              <div className="flex items-center justify-between px-6 py-3.5 sm:px-8 sm:py-4 border-b border-ink/5 shrink-0 bg-bg/50 backdrop-blur-sm z-20">
-                <div className="flex items-center gap-3">
-                  <div className="flex gap-1.5 px-1">
-                    <div className="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/30" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-amber-500/20 border border-amber-500/30" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/30" />
-                  </div>
-                  <span className="text-[10px] font-mono text-muted/40 uppercase tracking-[0.2em] ml-2">Project Case / {selectedProject.id}</span>
-                </div>
-                <button 
-                  onClick={() => setSelectedProject(null)}
-                  className="p-2 hover:bg-ink/5 rounded-full transition-colors group"
-                >
-                  <X size={20} className="text-muted/60 group-hover:text-ink transition-colors" />
-                </button>
-              </div>
-
-              {/* Scrollable Content */}
-              <div className="flex-1 overflow-y-auto scrollbar-hide px-6 py-6 sm:px-10 sm:py-10">
-                <div className="max-w-4xl mx-auto">
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="mb-8 sm:mb-10"
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1, transition: { delay: 0.15, duration: 0.2 } }}
+                exit={{ opacity: 0, transition: { duration: 0.1 } }}
+                className="p-6 sm:p-8"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <h3
+                    id="project-dialog-title"
+                    className="text-[22px] sm:text-[26px] font-semibold text-ink tracking-tight leading-tight"
                   >
-                    <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-ink tracking-tight mb-4 leading-[1.15]">
-                      {selectedProject.title}
-                    </h3>
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {selectedProject.tech.map((t, i) => (
-                        <span key={t} className="px-3 py-1 bg-ink/5 rounded-full text-[11px] font-mono text-muted/60 border border-ink/5">
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                  </motion.div>
-
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-                    {/* Left Column: Narrative */}
-                    <div className="lg:col-span-7 space-y-8 sm:space-y-10">
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
-                      >
-                        <p className="text-lg sm:text-xl text-ink/80 leading-relaxed font-medium">
-                          {selectedProject.description[0]}
-                        </p>
-                      </motion.div>
-
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3 }}
-                        className="space-y-5"
-                      >
-                        <h4 className="text-xs font-bold uppercase tracking-[0.3em] text-accent">Core Infrastructure</h4>
-                        <div className="grid grid-cols-1 gap-4">
-                          {selectedProject.description.slice(1).map((line, i) => (
-                            <div key={i} className="group p-4 rounded-2xl bg-ink/[0.02] border border-ink/5 hover:border-accent/20 hover:bg-accent/[0.02] transition-all duration-300">
-                              <div className="flex gap-4 items-start">
-                                <div className="w-6 h-6 rounded-lg bg-accent/10 flex items-center justify-center shrink-0 mt-0.5">
-                                  <div className="w-1.5 h-1.5 rounded-full bg-accent" />
-                                </div>
-                                <p className="text-[15px] sm:text-[16px] text-muted/70 leading-relaxed group-hover:text-ink/80 transition-colors">
-                                  {line}
-                                </p>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </motion.div>
-                    </div>
-
-                    {/* Right Column: Visuals & Links */}
-                    <div className="lg:col-span-5 space-y-6 sticky top-0">
-                      {/* Terminal Visual */}
-                      <motion.div 
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.4 }}
-                        className="rounded-2xl border border-ink/10 bg-black/40 overflow-hidden shadow-2xl"
-                      >
-                        <div className="px-4 py-2 bg-ink/5 flex items-center justify-between">
-                          <div className="flex gap-1">
-                            <div className="w-1.5 h-1.5 rounded-full bg-ink/10" />
-                            <div className="w-1.5 h-1.5 rounded-full bg-ink/10" />
-                          </div>
-                        </div>
-                        <div className="p-6 font-mono text-[12px] leading-relaxed text-accent/60">
-                          <div className="flex gap-3 mb-2">
-                            <span className="text-green-500/40">$</span>
-                            <span className="text-ink/40">init {selectedProject.id}</span>
-                          </div>
-                          <div className="text-muted/80">
-                            {">"} mounting resources...<br/>
-                            {">"} compiling dependencies...<br/>
-                            {">"} optimized for production
-                          </div>
-                          <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 opacity-80">
-                            {selectedProject.tech.slice(0, 4).map(t => (
-                              <span key={t}>#{t.toLowerCase()}</span>
-                            ))}
-                          </div>
-                        </div>
-                      </motion.div>
-
-                      {/* Action Cards */}
-                      <motion.div 
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.5 }}
-                        className="space-y-4"
-                      >
-                        {selectedProject.link && (
-                          <a 
-                            href={selectedProject.link} 
-                            target="_blank" 
-                            rel="noreferrer"
-                            className="group flex items-center justify-between p-4 rounded-xl bg-ink text-bg hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl"
-                          >
-                            <div className="flex items-center gap-4">
-                              <div className="p-2.5 bg-bg/10 rounded-xl group-hover:rotate-12 transition-transform">
-                                <Github size={20} />
-                              </div>
-                              <div className="text-left">
-                                <div className="text-[13px] font-bold">Source Code</div>
-                                <div className="text-[10px] opacity-60 font-mono tracking-tight">github.com/{selectedProject.id}</div>
-                              </div>
-                            </div>
-                            <ExternalLink size={18} className="opacity-40 group-hover:opacity-100 transition-opacity" />
-                          </a>
-                        )}
-
-                        {selectedProject.demoUrl && (
-                          <a 
-                            href={selectedProject.demoUrl} 
-                            target="_blank" 
-                            rel="noreferrer"
-                            className="group flex items-center justify-between p-4 rounded-xl bg-bg border border-ink/10 hover:border-accent/40 hover:scale-[1.02] active:scale-[0.98] transition-all"
-                          >
-                            <div className="flex items-center gap-4">
-                              <div className="p-2.5 bg-accent/5 rounded-xl text-accent">
-                                <ExternalLink size={20} />
-                              </div>
-                              <div className="text-left">
-                                <div className="text-[13px] font-bold">Live Demonstration</div>
-                                <div className="text-[10px] text-muted/60 font-mono tracking-tight">deployment_active.sh</div>
-                              </div>
-                            </div>
-                            <ArrowUpRight size={18} className="text-muted/20 group-hover:text-accent transition-colors" />
-                          </a>
-                        )}
-                      </motion.div>
-
-                      {/* Stats / Meta Info */}
-                      <motion.div 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.6 }}
-                        className="p-5 rounded-xl bg-ink/[0.01] border border-ink/5 space-y-3"
-                      >
-                         <div className="flex justify-between items-center text-[11px]">
-                           <span className="text-muted/40 font-mono uppercase tracking-widest">Status</span>
-                           <span className="text-green-500 font-bold flex items-center gap-1.5">
-                             <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                             Production Ready
-                           </span>
-                         </div>
-                         <div className="flex justify-between items-center text-[11px]">
-                           <span className="text-muted/40 font-mono uppercase tracking-widest">Role</span>
-                           <span className="text-ink font-bold">Lead Developer</span>
-                         </div>
-                         <div className="flex justify-between items-center text-[11px]">
-                           <span className="text-muted/40 font-mono uppercase tracking-widest">Type</span>
-                           <span className="text-ink font-bold">Open Source</span>
-                         </div>
-                      </motion.div>
-                    </div>
-                  </div>
+                    {selectedProject.title}
+                  </h3>
+                  <button
+                    type="button"
+                    autoFocus
+                    onClick={() => setSelectedProject(null)}
+                    aria-label="Close project"
+                    className="-mr-2 -mt-2 flex items-center justify-center w-11 h-11 shrink-0 rounded-full text-muted hover:text-ink hover:bg-ink/5 transition-colors"
+                  >
+                    <X size={18} aria-hidden="true" />
+                  </button>
                 </div>
-                
-                {/* Mobile Spacing Footer */}
-                <div className="h-20 sm:hidden" />
-              </div>
+
+                <p className="mt-3 text-[16px] sm:text-[17px] leading-[1.7] text-ink">
+                  {selectedProject.description[0]}
+                </p>
+
+                {selectedProject.description.length > 1 && (
+                  <ul className="mt-5 space-y-3">
+                    {selectedProject.description.slice(1).map(line => (
+                      <li key={line} className="text-[15px] leading-[1.7] text-muted">
+                        {line}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                <p className="mt-6 font-mono text-[12px] sm:text-[13px] leading-relaxed text-muted">
+                  {selectedProject.tech.join('   ')}
+                </p>
+
+                {(selectedProject.link || selectedProject.demoUrl) && (
+                  <div className="mt-2 flex flex-wrap gap-x-6">
+                    {selectedProject.link && (
+                      <a href={selectedProject.link} target="_blank" rel="noreferrer" className={cardLinkClass}>
+                        Source
+                        <ArrowUpRight size={15} aria-hidden="true" />
+                      </a>
+                    )}
+                    {selectedProject.demoUrl && (
+                      <a href={selectedProject.demoUrl} target="_blank" rel="noreferrer" className={cardLinkClass}>
+                        Live
+                        <ArrowUpRight size={15} aria-hidden="true" />
+                      </a>
+                    )}
+                  </div>
+                )}
+              </motion.div>
             </motion.div>
           </div>
         )}

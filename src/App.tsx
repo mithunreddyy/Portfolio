@@ -67,7 +67,7 @@ export default function App() {
   return (
     // "user" honors the OS reduced-motion setting for every Motion animation
     <MotionConfig reducedMotion="user">
-      <Router>
+      <Router basename={import.meta.env.BASE_URL}>
         <div className="min-h-screen bg-bg text-ink relative selection:bg-accent/30 selection:text-ink">
           <Suspense fallback={<div className="min-h-screen bg-bg flex items-center justify-center"><div className="w-8 h-8 border-2 border-accent/20 border-t-accent rounded-full animate-spin" /></div>}>
             <Routes>

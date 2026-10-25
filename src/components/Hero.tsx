@@ -80,7 +80,7 @@ export function Hero({ personalInfo }: { personalInfo: PersonalInfo }) {
           {hasFlag && (
             <>
               <img
-                src="/indian-flag.png"
+                src={`${import.meta.env.BASE_URL}indian-flag.png`}
                 alt="India"
                 className="inline-block w-[18px] h-[18px] sm:w-[22px] sm:h-[22px] mx-0.5 -translate-y-[2px]"
                 decoding="async"

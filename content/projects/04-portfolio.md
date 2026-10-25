@@ -7,7 +7,7 @@ tech:
   - "Markdown"
   - "Motion"
 link: "https://github.com/mithunreddyy/Portfolio"
-demoUrl: "https://mithunr.vercel.app/"
+demoUrl: "https://mithunreddyy.github.io/Portfolio/"
 ---
 
 - A personal portfolio with an editorial layout, where all content lives in Markdown files.

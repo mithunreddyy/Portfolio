@@ -10,7 +10,6 @@ Personal portfolio and blog. Project case studies, an editorial blog, and an ava
 - Hanken Grotesk for text, Geist Mono for metadata
 - Lucide React for icons
 - Open-Meteo for the temperature shown in the blog reader
-- Web3Forms for the contact form
 
 ## Editing content
 
@@ -33,7 +32,11 @@ npm run build
 npm run lint    # type check
 ```
 
-Copy `.env.example` to `.env` and set `VITE_WEB3FORMS_ACCESS_KEY` to enable the contact form.
+## Deploy
+
+Pushing to `master` builds the site and publishes it to GitHub Pages at https://mithunreddyy.github.io/Portfolio/ (`.github/workflows/deploy-pages.yml`).
+
+One-time setup: **Settings → Pages → Source → GitHub Actions**. No secrets or environment variables are needed.
 
 ## Layout
 

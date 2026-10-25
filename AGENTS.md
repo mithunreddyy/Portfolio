@@ -1,14 +1,15 @@
 # AGENTS.md
 
-Personal portfolio for Mithun Reddy: case studies, an editorial blog, and a live availability status. Stack: React 19, Vite, TypeScript, Tailwind CSS v4, Motion, Lenis, Markdown content files, Firebase Hosting.
+Personal portfolio for Mithun Reddy: case studies, an editorial blog, and a live availability status. Stack: React 19, Vite, TypeScript, Tailwind CSS v4, Motion, Lenis, Markdown content files, GitHub Pages.
 
 ## Commands
 
 - `npm run dev`: dev server on port 3000
 - `npm run build`: production build
 - `npm run lint`: type check (`tsc --noEmit`)
+- Deploy: pushing to `master` runs `.github/workflows/deploy-pages.yml`, which publishes to https://mithunreddyy.github.io/Portfolio/. Production builds use the `/Portfolio/` base, so reference files in `public/` through `import.meta.env.BASE_URL`, not a bare `/`.
 
-Copy `.env.example` to `.env` to enable the contact form (Web3Forms key). No database is used.
+No database, forms, or environment variables are used.
 
 ## Layout
 

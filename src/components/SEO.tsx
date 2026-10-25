@@ -12,9 +12,9 @@ interface SEOProps {
 export function SEO({ 
   title = "Mithun Reddy", 
   description = "Full-Stack Software Engineer & AI Enthusiast with 2+ years of experience in designing scalable web architectures and machine learning pipelines.",
-  canonical = "https://mithunr.vercel.app", 
+  canonical = "https://mithunreddyy.github.io/Portfolio/", 
   type = "website",
-  image = "https://mithunr.vercel.app/og-image.png",
+  image = "https://mithunreddyy.github.io/Portfolio/og-image.png",
   schema
 }: SEOProps) {
   const siteTitle = title.includes("Mithun Reddy") ? title : `${title} | Mithun Reddy`;

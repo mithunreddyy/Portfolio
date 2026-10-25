@@ -55,6 +55,10 @@ const bulletsOf = (body: string) =>
 const str = (v: Frontmatter[string] | undefined, fallback = '') =>
   typeof v === 'string' ? v : fallback;
 
+// Root-relative paths in content point into public/, so they need the deploy base prefix
+const asset = (path: string) =>
+  path.startsWith('/') ? `${import.meta.env.BASE_URL}${path.slice(1)}` : path;
+
 const profile = files(import.meta.glob('/content/profile.md', { query: '?raw', import: 'default', eager: true }))[0];
 
 export const PERSONAL_INFO: PersonalInfo = {
@@ -65,7 +69,7 @@ export const PERSONAL_INFO: PersonalInfo = {
   github: str(profile.data.github),
   linkedin: str(profile.data.linkedin),
   birthYear: Number(profile.data.birthYear),
-  resumeUrl: str(profile.data.resumeUrl),
+  resumeUrl: asset(str(profile.data.resumeUrl)),
   summary: profile.body,
 };
 

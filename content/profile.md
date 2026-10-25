@@ -1,5 +1,5 @@
 ---
-name: "mithunreddy"
+name: "mithun reddy"
 role: "Full-Stack Software Engineer"
 # location: "Hyderabad, India"
 email: "mithunreddy@outlook.in"

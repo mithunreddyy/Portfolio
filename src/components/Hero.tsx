@@ -69,8 +69,8 @@ export function Hero({ personalInfo }: { personalInfo: PersonalInfo }) {
   return (
     <section id="hero" className="section-container pt-4 sm:pt-6 pb-4 sm:pb-6">
       <motion.div {...reveal(0)}>
-        <h1 className="text-[16px] sm:text-[18px] font-medium text-ink leading-snug">{personalInfo.name}</h1>
-        <p className="mt-2 text-[15px] sm:text-[18px] text-muted leading-snug">{personalInfo.role}</p>
+        <h1 className="text-[18px] sm:text-[20px] font-medium text-ink leading-snug">{personalInfo.name}</h1>
+        <p className="mt-2 text-[16px] sm:text-[18px] text-muted leading-snug">{personalInfo.role}</p>
       </motion.div>
 
       <motion.div {...reveal(0.1)} className="mt-3.5 sm:mt-4 flex flex-col gap-3.5 sm:gap-4 text-[16px] sm:text-[18px] leading-[1.6] text-muted max-w-xl">
